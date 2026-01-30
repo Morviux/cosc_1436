@@ -46,7 +46,7 @@ void main()
     std::cout << "Enter your name: ";
 
     std::string name;
-    std::cin >> name; //This will be talked about in chapter 3
+    std::cin >> name; //This will be talked about in chapter 3 
 
     //Print out user's name
     std::cout << "Hello " << name << std::endl;
