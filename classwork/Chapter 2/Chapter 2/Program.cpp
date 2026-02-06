@@ -3,8 +3,17 @@
  * COSC 1436 Spring 2025
  */
 #include <iostream>
+#include <string>
 
-// Entry point of the program
+// Custom types
+struct Point
+{
+    // Declare the variables that make up the type
+    int x; // Field
+    int y;
+};
+ 
+ // Entry point of the program
 void main()
 {
     // What main does
@@ -161,15 +170,103 @@ void main()
     //  std::cin
 
     int someVariable = 0;
-    // someVariable = 0;
+    // someVariable = 0; someVariable = 0;
 
     // read an int from user
-    std::cin >> someVariable;
+    // std::cin >> someVariable;
 
-    int anotherValue = 10, anotherValueAgain = 20
+    int anotherValue = 10, anotherValueAgain = 20;
 
     // print out int
-        std::cout << someVariable;
+    std::cout << someVariable;
 
+    //Arithmetic operators
+    // + - * / %
+    // + - (unary)
 
+    // integer division problem:: int / int => int
+    int quotent = 10 / 3;  //int / int => int
+
+    // modulos -> remainder when you divide two ints
+    int remainder = 10 % 3; // 1
+
+    int negativeRemainder = -remainder;
+    quotent = +quotent;
+
+    double actualQuotent = 10.0 / 3.0; // double / double -> double
+
+    // Calculate perimeter of rectangle
+    std::cout << "Enter Length? ";
+    std::cin >> length;
+
+    std::cout << "Enter width? ";
+    std::cin >> width;
+
+    // P = 2L +2W
+    perimeter = length + length + width + width;
+    std::cout << "Perimeter = " << perimeter << std::endl;
+
+    // Scope - its lifetime; point of declaration until the block that contains it ends
+    // aLocalVariable = 20;
+
+    int aLocalVariable = 0;
+    aLocalVariable = 10;
+
+    // Start a new block
+    {
+        double blockVariableA = 0;
+
+        // Can access variables declared in the block + any parent blocks
+        blockVariableA = 10;
+        aLocalVariable = 20;
+
+        double length;
+        length = 80;
+    }
+
+    std::cout << length << std::endl;
+    //blockVariableA no longer accessible
+
+    // C++ strings
+    // - Not a primitive type
+    // - Only usagble in C++
+    std::string someStringValue;
+    someStringValue = "Bob";
+    someStringValue = someStringValue + "How are you?";
+
+    // Assignment
+    //  - Expression as well
+    //  - Value is value of variable after assignment
+    //  - Can chain assignments together
+    length = width = perimeter = 0;
+
+    // Named constants
+    //  Literal : 25
+    //  Variable : T id = 25;
+    // const_decl ::= const T id = E;
+    // Casing: pascal or all uppercase
+    // must be complile time constant - must be calculatable at compile time
+    // - Literals
+    // - simple math exprssions with constant expressions
+    // 4 + 5, MaximumStudents, MaximumStudents - 10
+    const int MAXI_SIZE = 25;
+    const int MaximumStudents = 25;
+
+    // Change value at runtime
+    // maximumStudents = 40; cannot write to a constant
+
+    int largestNumberOfStudents = 25; // using the literal
+    // largestNumberOfStudents = maximumStudents; // using the variable
+    largestNumberOfStudents = MaximumStudents; // Using constant
+
+    // Create and get input for a point
+    Point left;
+
+    std::cout << "Enter the X value ";
+    std::cin >> left.x; //specify fields using a dot. Followed by the field.
+
+    std::cout << "Enter the Y value ";
+    std::cin >> left.y;
+
+    std::cout << "(" << left.x << ", " << left.y << ")" << std::endl;
 }
