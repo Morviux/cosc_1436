@@ -72,8 +72,8 @@ void main()
     // Formatted output - <iomanip>
     // manipulator      persisted?      what?
     // --------------------------------
-    // set w(#)         NOT persisted   pads the value to the given character length
-    // left             YES             left justifies values when padded
+    // set w(#)         N               pads the value to the given character length
+    // left             Y               left justifies values when padded
     // right            Y               right justifies values when padded (default)
     // setfill('char')  Y               sets character to use when padding values (default is space)
     // fixed            Y               forces fixed point notation for floating point values
