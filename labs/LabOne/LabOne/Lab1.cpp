@@ -11,7 +11,7 @@
 
 void main()
 {
-    std::string name;
+    std::string firstName;
     int labOneGrade, labTwoGrade, labThreeGrade, labFourGrade;
 
     int examOne, examTwo, examThree;
@@ -29,8 +29,8 @@ void main()
 
     std::cout << std::endl;
 
-    std::cout << "Enter Your Name: ";
-    std::cin >> name;
+    std::cout << "Enter Your First Name ";
+    std::cin >> firstName;
 
     std::cout << std::endl;
 
@@ -69,7 +69,7 @@ void main()
 
     std::cout << std::endl;
 
-    std::cout << name << ", your lab grades are... " << std::endl;
+    std::cout << firstName << ", your lab grades are... " << std::endl;
     std::cout << "Lab 1: " << labOneGrade << std::endl;
     std::cout << "Lab 2: " << labTwoGrade << std::endl;
     std::cout << "Lab 3: " << labThreeGrade << std::endl;
@@ -77,14 +77,14 @@ void main()
 
     std::cout << std::endl;
 
-    std::cout << name << ", your exam grades are... " << std::endl;
+    std::cout << firstName << ", your exam grades are... " << std::endl;
     std::cout << "Exam 1: " << examOne << std::endl;
     std::cout << "Exam 2: " << examTwo << std::endl;
     std::cout << "Exam 3: " << examThree << std::endl;
 
     std::cout << std::endl;
 
-    std::cout << name << ", your other grades are.. " << std::endl;
+    std::cout << firstName << ", your other grades are.. " << std::endl;
     std::cout << "Participation: " << partGrade << std::endl;
     std::cout << "Final exam: " << finalExam << std::endl; 
 
