@@ -51,8 +51,8 @@ void main()
     std::cout << std::endl;
 
     // Asking user for exam grades - simplified (Also for testing purposes)
-    std::cout << "Enter Your Three Exam Grades: ";
-    std::cin >> examOne >> examTwo >> examThree; 
+    /*std::cout << "Enter Your Three Exam Grades: ";
+    std::cin >> examOne >> examTwo >> examThree; */
 
     // prompting user for exam grades
     std::cout << "Enter exam 1 grade: ";
