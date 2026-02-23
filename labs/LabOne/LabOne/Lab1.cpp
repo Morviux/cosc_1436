@@ -29,11 +29,16 @@ void main()
 
     std::cout << std::endl;
 
-    std::cout << "Enter Your First Name ";
+    std::cout << "Enter Your First Name: ";
     std::cin >> firstName;
 
     std::cout << std::endl;
 
+    // asking user for lab grades - simplified (I put this here for testing purposes. Wasn't sure if you like this format, professor).
+   /* std::cout << "Enter Your Four Lab Grades: ";
+    std::cin >> labOneGrade >> labTwoGrade >> labThreeGrade >> labFourGrade;*/
+
+    // prompting user for lab grades
     std::cout << "Enter your grade for lab 1: ";
     std::cin >> labOneGrade;
     std::cout << "Enter your grade for lab 2: ";
@@ -45,6 +50,11 @@ void main()
 
     std::cout << std::endl;
 
+    // Asking user for exam grades - simplified (Also for testing purposes)
+    std::cout << "Enter Your Three Exam Grades: ";
+    std::cin >> examOne >> examTwo >> examThree; 
+
+    // prompting user for exam grades
     std::cout << "Enter exam 1 grade: ";
     std::cin >> examOne;
     std::cout << "Enter exam 2 grade: ";
@@ -54,11 +64,9 @@ void main()
 
     std::cout << std::endl; 
 
+    // asking user for extra grades
     std::cout << "Enter participation grade: ";
     std::cin >> partGrade;
-
-    std::cout << std::endl;
-
     std::cout << "Enter final exam grade: ";
     std::cin >> finalExam;
 
@@ -68,7 +76,8 @@ void main()
     classAverage = (labAverage * 0.65) + (examAverage * 0.20) + (partGrade * 0.05) + (finalExam * .10);
 
     std::cout << std::endl;
-
+    
+    // lab grade display
     std::cout << firstName << ", your lab grades are... " << std::endl;
     std::cout << "Lab 1: " << labOneGrade << std::endl;
     std::cout << "Lab 2: " << labTwoGrade << std::endl;
@@ -77,6 +86,7 @@ void main()
 
     std::cout << std::endl;
 
+    // exam grade display
     std::cout << firstName << ", your exam grades are... " << std::endl;
     std::cout << "Exam 1: " << examOne << std::endl;
     std::cout << "Exam 2: " << examTwo << std::endl;
@@ -84,18 +94,20 @@ void main()
 
     std::cout << std::endl;
 
+    // other grades display
     std::cout << firstName << ", your other grades are.. " << std::endl;
     std::cout << "Participation: " << partGrade << std::endl;
     std::cout << "Final exam: " << finalExam << std::endl; 
 
     std::cout << std::endl;
 
+    // grade averages
     std::cout << "Lab Average " << "(65% of your grade): " << std::fixed << std::setprecision(2) << labAverage << "%!" << std::endl;
     std::cout << "Exam Average " << "(20% of your grade): " << std::fixed << std::setprecision(2) << examAverage << "%!" << std::endl;
-    std::cout << "Participation " << "(5% of your grade) " << std::fixed << std::setprecision(2) << partGrade << "%!" << std::endl;
-    std::cout << "Final Exam " << "(10% of your grade) " << std::fixed << std::setprecision(2) << finalExam << "%!" << std::endl;
+    std::cout << "Participation " << "(5% of your grade): " << std::fixed << std::setprecision(2) << partGrade << "%!" << std::endl;
+    std::cout << "Final Exam " << "(10% of your grade): " << std::fixed << std::setprecision(2) << finalExam << "%!" << std::endl;
 
     std::cout << std::endl;
 
-    std::cout << "Class Average? " << std::fixed << std::setprecision(2) << classAverage << "%!" << std::endl;
+    std::cout << "Your class average? " << std::fixed << std::setprecision(2) << classAverage << "%!" << std::endl;
 }
