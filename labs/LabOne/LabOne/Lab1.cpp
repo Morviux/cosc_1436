@@ -62,7 +62,7 @@ void main()
     std::cout << "Enter final exam grade: ";
     std::cin >> finalExam;
 
-    // Calculations for both labs and exams - Casted the numbers into doubles 
+    // Calculations for labs, exams, and the class average
     labAverage = (static_cast<double>(labOneGrade + labTwoGrade + labThreeGrade + labFourGrade) / 4);
     examAverage = (static_cast<double>(examOne + examTwo + examThree) / 3);
     classAverage = (labAverage * 0.65) + (examAverage * 0.20) + (partGrade * 0.05) + (finalExam * .10);
