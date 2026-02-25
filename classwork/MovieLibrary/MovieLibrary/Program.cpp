@@ -247,4 +247,5 @@ void main()
     //      ..
     // }
     //              - Basically a glorified if else if statement
+    //              - The most advanced variant, can only be used under certain cases. 
 }
