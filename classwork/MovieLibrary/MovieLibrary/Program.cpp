@@ -40,17 +40,43 @@ void main()
     std::cin >> choice;
 
     // Handle menu choice
-    if (choice == 'A' || choice == 'a')
-        // TODO: Add movie logic here
-        std::cout << "Add not implemented" << std::endl;
-    else if (choice == 'E' || choice == 'e')
-        std::cout << "Add not implemented" << std::endl;
-    else if (choice == 'D' || choice == 'd')
-        std::cout << "Add not implemented" << std::endl;
-    else if (choice == 'V' || choice == 'v')
-        std::cout << "Add not implemented" << std::endl;
-    else
-        std::cout << "ERROR: Invalid option" << std::endl;
+    //if (choice == 'A' || choice == 'a')
+    //    // TODO: Add movie logic here
+    //    std::cout << "Add not implemented" << std::endl;
+    //else if (choice == 'E' || choice == 'e')
+    //    std::cout << "Add not implemented" << std::endl;
+    //else if (choice == 'D' || choice == 'd')
+    //    std::cout << "Add not implemented" << std::endl;
+    //else if (choice == 'V' || choice == 'v')
+    //    std::cout << "Add not implemented" << std::endl;
+    //else
+    //    std::cout << "ERROR: Invalid option" << std::endl;
+    //
+    // switch_stmt ::= switch (E) { case statement* }
+    // case_stmt ::= case E : S ;
+    // Replacement for (E == V) - It MUST be this in order for it to be used as a switch statement
+    // Limitations
+    //   1. Switch expression must be an integral or character (No floating points, no strings)
+    //   2. All case labels must be compile-time constant integers
+    //   3. Case labels must be unique
+    switch (choice)
+    {
+        // TODO: Add movie logic here..
+        case 'A': std::cout << "Add not implemented" << std::endl;
+        case 'a': std::cout << "Add not impemented" << std::endl;
+
+        case 'E': std::cout << "Edit not implemented" << std::endl;
+        case 'e': std::cout << "Edit not impemented" << std::endl;
+        
+        case 'D': std::cout << "Delete not implemented" << std::endl;
+        case 'd': std::cout << "Delete not impemented" << std::endl;
+
+        case 'V': std::cout << "View not implemented" << std::endl;
+        case 'v': std::cout << "View not impemented" << std::endl;
+           
+        // else std::cout << "ERROR: Invalid Option" << std::endl;
+       
+    }
 
     // Logical operators
     //  log_expr ::= Eb log_op Eb
@@ -149,10 +175,11 @@ void main()
     std::cout << "Genre(s): " << movie.genres << std::endl;
     std::cout << "User Rating: " << movie.userRating << std::endl;
 
-    std::string classicIndicator = "No";
-    if (movie.isClassic)
-        classicIndicator = "Yes";
-    std::cout << "Classic? " << classicIndicator << std::endl;
+    //std::string classicIndicator = "No";
+    //if (movie.isClassic)
+    //    classicIndicator = "Yes";
+    // std::string classicIndicator = movie.isClassic ? "Yes" : "No";
+    std::cout << "Classic? " << (movie.isClassic ? "Yes" : "No") << std::endl;
 
     std::cout << movie.description << std::endl;
 
@@ -206,4 +233,18 @@ void main()
     //// Use .c_str() to convert C++ string to C
     //int result = _strcmpi("Bob", "bob");
     //isSingularName = _strcmpi(firstName.c_str(), lastName.c_str()) == 0;  //Not equal != 0
+
+    // NOTES:
+    // Conditional Operator: E(Booleen) ? V(True) : V(False) - Good for calculating one of two values 
+    //                                                       - Both Values of the variables in the conditional operator must be of the same type
+    //                                                       - Will NOT do type coercion. (But you can type cast)
+    //                                                       - The compiler may confuse itself when distinguishing a conditional operator. Best course of action is to use parenthesis   
+
+    // Switch Statements: Switch (Expression)
+    // {
+    //      case Label(1) : S (statement);
+    //      case Label(2) : S (statement);
+    //      ..
+    // }
+    //              - Basically a glorified if else if statement
 }
