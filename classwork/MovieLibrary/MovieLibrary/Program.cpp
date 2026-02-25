@@ -59,22 +59,32 @@ void main()
     //   1. Switch expression must be an integral or character (No floating points, no strings)
     //   2. All case labels must be compile-time constant integers
     //   3. Case labels must be unique
+    // To prevent fallthrough from one case to the next, end your case statement with break
     switch (choice)
     {
         // TODO: Add movie logic here..
-        case 'A': std::cout << "Add not implemented" << std::endl;
-        case 'a': std::cout << "Add not impemented" << std::endl;
+        case 'A':
+        //{
+        //      //choice = 'a';
+        //      //std::cout << "hello";
+        //      std::cout << "Add not implemented" << std::endl; break;
+        //      break;
+        //}
+        case 'a': std::cout << "Add not impemented" << std::endl; break;
+            
 
-        case 'E': std::cout << "Edit not implemented" << std::endl;
-        case 'e': std::cout << "Edit not impemented" << std::endl;
+        case 'E': // std::cout << "Edit not implemented" << std::endl; break;
+        case 'e': std::cout << "Edit not impemented" << std::endl; break;
+            
         
-        case 'D': std::cout << "Delete not implemented" << std::endl;
-        case 'd': std::cout << "Delete not impemented" << std::endl;
+        case 'D': // std::cout << "Delete not implemented" << std::endl; break;
+        case 'd': std::cout << "Delete not impemented" << std::endl; break;
 
-        case 'V': std::cout << "View not implemented" << std::endl;
-        case 'v': std::cout << "View not impemented" << std::endl;
-           
-        // else std::cout << "ERROR: Invalid Option" << std::endl;
+        case 'V': // std::cout << "View not implemented" << std::endl; break;
+        case 'v': std::cout << "View not impemented" << std::endl; break;
+        
+        // Everything else - It is optional, but generally required
+        default: std::cout << "ERROR: Invalid Option" << std::endl; break;
        
     }
 
