@@ -25,6 +25,16 @@ struct Movie
     std::string description;  //Optional
 };
 
+//  Enumeration - subrange of integers
+enum Menu_COMMAND
+{
+    // Enum values
+    ADD,
+    EDIT,
+    DELETE,
+    VIEW
+};
+
 void main()
 {
     // Display menu
@@ -36,8 +46,26 @@ void main()
     std::cout << "V)iew Movie" << std::endl;
     std::cout << "? ";
 
+    // Handle user input
+    Menu_COMMAND input;
     char choice;
     std::cin >> choice;
+    switch (choice)
+    {
+        case 'A':
+        case 'a': input = ADD; break;
+
+        case 'E':
+        case 'e': input = EDIT; break;
+
+        case 'D':
+        case 'd': input = DELETE; break;
+
+        case 'V':
+        case 'v': input = VIEW; break;
+    }
+
+    
 
     // Handle menu choice
     //if (choice == 'A' || choice == 'a')
@@ -60,28 +88,28 @@ void main()
     //   2. All case labels must be compile-time constant integers
     //   3. Case labels must be unique
     // To prevent fallthrough from one case to the next, end your case statement with break
-    switch (choice)
+    switch (input)
     {
         // TODO: Add movie logic here..
-        case 'A':
+        // case 'A':
         //{
         //      //choice = 'a';
         //      //std::cout << "hello";
         //      std::cout << "Add not implemented" << std::endl; break;
         //      break;
         //}
-        case 'a': std::cout << "Add not impemented" << std::endl; break;
+        case ADD: std::cout << "Add not impemented" << std::endl; break;
             
 
-        case 'E': // std::cout << "Edit not implemented" << std::endl; break;
-        case 'e': std::cout << "Edit not impemented" << std::endl; break;
+        // case 'E': // std::cout << "Edit not implemented" << std::endl; break;
+        case EDIT: std::cout << "Edit not impemented" << std::endl; break;
             
         
-        case 'D': // std::cout << "Delete not implemented" << std::endl; break;
-        case 'd': std::cout << "Delete not impemented" << std::endl; break;
+        // case 'D': // std::cout << "Delete not implemented" << std::endl; break;
+        case DELETE: std::cout << "Delete not impemented" << std::endl; break;
 
-        case 'V': // std::cout << "View not implemented" << std::endl; break;
-        case 'v': std::cout << "View not impemented" << std::endl; break;
+        //case 'V': // std::cout << "View not implemented" << std::endl; break;
+        case VIEW: std::cout << "View not impemented" << std::endl; break;
         
         // Everything else - It is optional, but generally required
         default: std::cout << "ERROR: Invalid Option" << std::endl; break;
@@ -258,4 +286,6 @@ void main()
     // }
     //              - Basically a glorified if else if statement
     //              - The most advanced variant, can only be used under certain cases. 
+
+    // Enumeration -> Subrange of an int
 }
