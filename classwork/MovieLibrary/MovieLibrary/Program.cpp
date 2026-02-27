@@ -15,28 +15,77 @@ struct Movie
 
     std::string genres;  // comma separated list
 
-    int runLength;       // >= 0
-    int releaseYear;     // 1900 to 2100
+    int runLength = 0;      // >= 0
+    int releaseYear = 0;     // 1900 to 2100
 
-    double userRating;   //1 to 5
+    double userRating = 0;   //1 to 5
 
-    bool isClassic;
+    bool isClassic = false;
 
     std::string description;  //Optional
 };
 
 //  Enumeration - subrange of integers
-enum Menu_COMMAND
+enum MENU_COMMAND
 {
     // Enum values
-    ADD,
-    EDIT,
-    DELETE,
-    VIEW
+    MC_ADD = 1,    // const_int ADD = 0
+    MC_EDIT = 2,       // = 1
+    MC_DELETE = 3,     // const_int DELETE = 3
+    MC_VIEW = 4,
+    MC_QUIT = 5
 };
+
+enum ENHANCE_MENU_COMMAND
+{
+    EMC_INSERT,
+    EMC_DELETE      // const int DELETE = 1
+};
+
+// C++ enum
+enum class MenuCommand
+{
+    Add = 1,
+    Edit = 2,
+    Delete = 3,
+    View = 4,
+    Quit = 5
+};
+
+enum class EnhancedMenuCommand
+{
+    Insert,
+    Delete
+};
+    
 
 void main()
 {
+    // Demo
+    //int someValue = 20;
+    //// Side effect: consequences of evaluating the expression
+
+    //// ++someValue; // prefix inc: inciments someValue by 1 and stores it back into someValue (somevalue += 1)
+    //std::cout << ++someValue << " " << someValue << std::endl;
+
+    //// someValue++; // postfix inc: inciments someValue by 1 and stores it back into someValue (somevalue += 1)
+    //std::cout << someValue++ << " " << someValue << std::endl;
+
+    //// --someValue; // prefix dec: Derements someValue by 1 and stores it back into someValue (someValue -= 1)
+    //std::cout << --someValue << " " << someValue << std::endl;
+
+    //// someValue--; // postfix inc: Decrements someValue by 1 and stores it back into someValue (someValue -= 1)
+    //std::cout << someValue-- << " " << someValue << std::endl;
+
+    //someValue = 20;
+    //std::cout << someValue++ << " " << ++someValue << " " << someValue << std::endl;
+
+    //someValue = 20;
+    //if (++someValue > 30 || someValue-- < 10)
+    //    std::cout << "Is true: ";
+    //std::cout << someValue << std::endl;
+
+
     // Display menu
     std::cout << "Main Menu" << std::endl;
     std::cout << "------------" << std::endl;
@@ -44,28 +93,43 @@ void main()
     std::cout << "E)dit Movie" << std::endl;
     std::cout << "D)elete Movie" << std::endl;
     std::cout << "V)iew Movie" << std::endl;
+    std::cout << "Q)uit" << std::endl;
     std::cout << "? ";
 
     // Handle user input
-    Menu_COMMAND input;
+    MenuCommand input = (MenuCommand)0;
     char choice;
-    std::cin >> choice;
-    switch (choice)
+
+    // While loop
+    //  While_stat ::= (Eb) S
+    // Pre-test so S executes 0 or more times 
+    while (input == (MenuCommand)0)
     {
-        case 'A':
-        case 'a': input = ADD; break;
+        std::cin >> choice;
+        switch (choice)
+        {
+            case 'A':
+            case 'a': input = MenuCommand::Add; break;
 
-        case 'E':
-        case 'e': input = EDIT; break;
+            case 'E':
+            case 'e': input = MenuCommand::Edit; break;
 
-        case 'D':
-        case 'd': input = DELETE; break;
+            case 'D':
+            case 'd': input = MenuCommand::Delete; break;
 
-        case 'V':
-        case 'v': input = VIEW; break;
+            case 'V':
+            case 'v': input = MenuCommand::View; break;
+
+            case 'Q':
+            case 'q': input = MenuCommand::Quit; break;
+
+            default: std::cout << "ERROR: Invalid option" << std::endl; break;
+        }
     }
 
-    
+    // Input = ADD
+    // std::cin >> (int)input;
+    // std:cout  << (int)input;
 
     // Handle menu choice
     //if (choice == 'A' || choice == 'a')
@@ -98,22 +162,24 @@ void main()
         //      std::cout << "Add not implemented" << std::endl; break;
         //      break;
         //}
-        case ADD: std::cout << "Add not impemented" << std::endl; break;
-            
+        case MenuCommand::Add: std::cout << "Add not impemented" << std::endl; break;
+
 
         // case 'E': // std::cout << "Edit not implemented" << std::endl; break;
-        case EDIT: std::cout << "Edit not impemented" << std::endl; break;
-            
-        
+        case MenuCommand::Edit: std::cout << "Edit not impemented" << std::endl; break;
+
+
         // case 'D': // std::cout << "Delete not implemented" << std::endl; break;
-        case DELETE: std::cout << "Delete not impemented" << std::endl; break;
+        case MenuCommand::Delete: std::cout << "Delete not impemented" << std::endl; break;
 
         //case 'V': // std::cout << "View not implemented" << std::endl; break;
-        case VIEW: std::cout << "View not impemented" << std::endl; break;
-        
+        case MenuCommand::View: std::cout << "View not impemented" << std::endl; break;
+
+        case MenuCommand::Quit: std::cout << "Quit not implemented" << std::endl; break;
+
         // Everything else - It is optional, but generally required
         default: std::cout << "ERROR: Invalid Option" << std::endl; break;
-       
+
     }
 
     // Logical operators
@@ -127,11 +193,16 @@ void main()
     std::cin.ignore(INT32_MAX, '\n');
     //Prompt for movie details
     std::cout << "Enter title (required): ";
-    std::getline(std::cin, movie.title);
+    
 
-    //Validate title
-    if (movie.title == "")
-        std::cout << "ERROR: Title is required" << std::endl;
+    while (movie.title == "")
+    {
+        std::getline(std::cin, movie.title);
+
+        //Validate title
+        if (movie.title == "")
+            std::cout << "ERROR: Title is required" << std::endl;
+    }
 
     std::cout << "Enter description: ";
     std::getline(std::cin, movie.description);
@@ -139,14 +210,19 @@ void main()
     std::cout << "Enter genres: ";
     std::getline(std::cin, movie.genres);
 
+    // HACK: fix this
     std::cout << "Enter run length (in minutes): ";
-    std::cin >> movie.runLength;
-
-    //Runlength >= 0
-    if (movie.runLength < 0)
+    movie.runLength = -1;
+    while (movie.runLength < 0)
     {
-        std::cout << "ERROR: Run length must be at least 0" << std::endl;
-        movie.runLength = 0;
+        std::cin >> movie.runLength;
+
+        //Runlength >= 0
+        if (movie.runLength < 0)
+        {
+            std::cout << "ERROR: Run length must be at least 0" << std::endl;
+            // movie.runLength = 0;
+        }
     }
 
     std::cout << "Enter release year (1900-2100): ";
@@ -288,4 +364,22 @@ void main()
     //              - The most advanced variant, can only be used under certain cases. 
 
     // Enumeration -> Subrange of an int
+
+
+    // prefix increiment ++x Both incriment my variable by one
+    // postfix increment X++
+
+    // prefix decriment --x both decriment my variable by one
+    // postfix decriment x--
+    //      ONLY VARIABLES ARE ALLOWED
+
+    // TABLE
+    // OP               Syntax              X'          Expression Returns
+    // Prefix inc       ++x                 x+1         X'
+    // Postfix inc      x++                 x+1         temp = x
+    
+    // prefix dec       --x                 x-1         X'
+    // postfix dec
+
+
 }
