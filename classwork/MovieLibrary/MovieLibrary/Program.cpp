@@ -34,12 +34,41 @@ enum class MenuCommand
     View = 4,
     Quit = 5
 };
-    
+  
 
+
+
+/// @brief Displays a horizontal line.
+void DisplayLine()
+{
+    // logical operation
+    std::cout << "------------" << std::endl;
+};
+
+/// @brief Resets the output text colors to their default values.
+void ResetColors()
+{
+    std::cout << "\033[0m";
+}
+
+/// @brief Clears the input buffer of extra characters.
+void ClearInputBuffer()
+{
+    std::cin.ignore(INT32_MAX, '\n'); 
+};
+
+/// @brief Sets the output colors of error messages to red.
+void SetErrorColor()
+{
+    std::cout << "\033[91m";
+};
+
+// Main is a special fucntion
+//     - It is the entry function of your program
+//     - It's declaration can vary slightly
+//     - You cannot call main directly
 void main()
 {
-
-
     Movie movie;
 
     bool quit = false;
@@ -47,7 +76,8 @@ void main()
     {
         // Display menu
         std::cout << "Main Menu" << std::endl;
-        std::cout << "------------" << std::endl;
+        // std::cout << "------------" << std::endl;
+        DisplayLine();
         std::cout << "A)dd Movie" << std::endl;
         std::cout << "E)dit Movie" << std::endl;
         std::cout << "D)elete Movie" << std::endl;
@@ -81,7 +111,13 @@ void main()
                 case 'Q':
                 case 'q': input = MenuCommand::Quit; break;
 
-                default: std::cout << "ERROR: Invalid option" << std::endl; break;
+                default:
+                {
+                    SetErrorColor();
+                    std::cout << "ERROR: Invalid option" << std::endl;
+                    ResetColors();
+                    break;
+                }
             }
         }
 
@@ -92,7 +128,8 @@ void main()
             {
                 // Add movie logic
                 // Reset input buiffer
-                std::cin.ignore(INT32_MAX, '\n');
+                // std::cin.ignore(INT32_MAX, '\n');
+                ClearInputBuffer();
 
                 // Prompt for movie details
                 std::cout << "Enter title (required): ";
@@ -109,8 +146,6 @@ void main()
                 std::getline(std::cin, movie.description);
 
                 std::cout << "Enter genre: ";
-
-
 
                 for (int count = 0; count < 5; ++count)
                 {
@@ -417,4 +452,22 @@ bool isSingularName = firstName == lastName;
 Case insensitive string comparison
 Use .c_str() to convert C++ string to C
 int result = _strcmpi("Bob", "bob");
-isSingularName = _strcmpi(firstName.c_str(), lastName.c_str()) == 0;  //Not equal != 0 */
+isSingularName = _strcmpi(firstName.c_str(), lastName.c_str()) == 0;  //Not equal != 0 
+
+FUNCTIONS:
+Function - a reusable block of code that does one logical operation
+
+Function definition - Defines a funcrtion and its implementation
+      func_defn ::= T id () { S* }
+      functions are actiosn that should be named as verbs
+ - casing: camel or PascalCasing
+
+func_def ::= void id ()
+{
+    Statement
+}; 
+
+Function Call: func_call ::= id(arguments)
+
+args ::= E {, E }*
+*/
