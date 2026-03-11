@@ -25,23 +25,6 @@ struct Movie
     std::string description;  //Optional
 };
 
-//  Enumeration - subrange of integers
-enum MENU_COMMAND
-{
-    // Enum values
-    MC_ADD = 1,    // const_int ADD = 0
-    MC_EDIT = 2,       // = 1
-    MC_DELETE = 3,     // const_int DELETE = 3
-    MC_VIEW = 4,
-    MC_QUIT = 5
-};
-
-enum ENHANCE_MENU_COMMAND
-{
-    EMC_INSERT,
-    EMC_DELETE      // const int DELETE = 1
-};
-
 // C++ enum
 enum class MenuCommand
 {
@@ -51,63 +34,17 @@ enum class MenuCommand
     View = 4,
     Quit = 5
 };
-
-enum class EnhancedMenuCommand
-{
-    Insert,
-    Delete
-};
     
 
 void main()
 {
-    /* Demo
-    int someValue = 20;
-     Side effect: consequences of evaluating the expression */
-
-    /* ++someValue; // prefix inc: inciments someValue by 1 and stores it back into someValue (somevalue += 1)
-     std::cout << ++someValue << " " << someValue << std::endl;
-
-     someValue++; // postfix inc: inciments someValue by 1 and stores it back into someValue (somevalue += 1)
-     std::cout << someValue++ << " " << someValue << std::endl;
-
-    --someValue; // prefix dec: Derements someValue by 1 and stores it back into someValue (someValue -= 1)
-    std::cout << --someValue << " " << someValue << std::endl;
-
-     someValue--; // postfix inc: Decrements someValue by 1 and stores it back into someValue (someValue -= 1)
-     std::cout << someValue-- << " " << someValue << std::endl;
-
-     someValue = 20;
-     std::cout << someValue++ << " " << ++someValue << " " << someValue << std::endl;
-
-    someValue = 20;
-    if (++someValue > 30 || someValue-- < 10)
-        std::cout << "Is true: ";
-     std::cout << someValue << std::endl; */
-
-    // Demo nested loops
-    int someValue = 10;
-    for (int x = 0; x < 10; ++x) // 50 times
-    {
-        for (int y = 0; y < 10; ++y) // 20 * 50 == 1000
-            std::cout << x + y << std::endl;
-
-        if (x % 10 == 0)
-        {
-            std::cout << "Quit? ";
-            int choice;
-            std::cin >> choice;
-            if (choice != 0)
-                break;
-        }
-    }
 
 
     Movie movie;
 
     bool quit = false;
     while (!quit)
-    { 
+    {
         // Display menu
         std::cout << "Main Menu" << std::endl;
         std::cout << "------------" << std::endl;
@@ -122,470 +59,362 @@ void main()
         MenuCommand input = (MenuCommand)0;
         char choice;
 
-    // While loop
-    //  While_stat ::= (Eb) S
-    // Pre-test so S executes 0 or more times 
-    while (input == (MenuCommand)0)
-    {
-        std::cin >> choice;
-        switch (choice)
+
+        // Pre-test so S executes 0 or more times 
+        while (input == (MenuCommand)0)
         {
-            case 'A':
-            case 'a': input = MenuCommand::Add; break;
-
-            case 'E':
-            case 'e': input = MenuCommand::Edit; break;
-
-            case 'D':
-            case 'd': input = MenuCommand::Delete; break;
-
-            case 'V':
-            case 'v': input = MenuCommand::View; break;
-
-            case 'Q':
-            case 'q': input = MenuCommand::Quit; break;
-
-            default: std::cout << "ERROR: Invalid option" << std::endl; break;
-        }
-    }
-
-    /* Input = ADD
-    std::cin >> (int)input;
-    std:cout  << (int)input;*/
-
-    /* Handle menu choice
-    (choice == 'A' || choice == 'a')
-         TODO: Add movie logic here
-        std::cout << "Add not implemented" << std::endl;
-    else if (choice == 'E' || choice == 'e')
-        std::cout << "Add not implemented" << std::endl;
-    else if (choice == 'D' || choice == 'd')
-        std::cout << "Add not implemented" << std::endl;
-    else if (choice == 'V' || choice == 'v')
-        std::cout << "Add not implemented" << std::endl;
-    else
-        std::cout << "ERROR: Invalid option" << std::endl;
-    
-     switch_stmt ::= switch (E) { case statement* }
-     case_stmt ::= case E : S ;
-     Replacement for (E == V) - It MUST be this in order for it to be used as a switch statement
-     Limitations
-       1. Switch expression must be an integral or character (No floating points, no strings)
-       2. All case labels must be compile-time constant integers
-       3. Case labels must be unique
-     To prevent fallthrough from one case to the next, end your case statement with break*/
-
-    switch (input)
-    {
-        /* TODO: Add movie logic here..
-         case 'A':
-        
-              choice = 'a';
-              std::cout << "hello";
-              std::cout << "Add not implemented" << std::endl; break;
-              break;
-        }*/
-
-        case MenuCommand::Add:
-        {
-            // Add movie logic
-            // Reset input buiffer
-            std::cin.ignore(INT32_MAX, '\n');
-
-            // Prompt for movie details
-            std::cout << "Enter title (required): ";
-            while (movie.title == "")
+            std::cin >> choice;
+            switch (choice)
             {
-                std::getline(std::cin, movie.title);
+                case 'A':
+                case 'a': input = MenuCommand::Add; break;
 
-                // Validate title
-                if (movie.title == "")
-                    std::cout << "ERROR: Title is required" << std::endl;
+                case 'E':
+                case 'e': input = MenuCommand::Edit; break;
+
+                case 'D':
+                case 'd': input = MenuCommand::Delete; break;
+
+                case 'V':
+                case 'v': input = MenuCommand::View; break;
+
+                case 'Q':
+                case 'q': input = MenuCommand::Quit; break;
+
+                default: std::cout << "ERROR: Invalid option" << std::endl; break;
             }
-
-            std::cout << "Enter description: ";
-            std::getline(std::cin, movie.description);
-
-            std::cout << "Enter genre: ";
-
-            /* Cases for when expressions can be excluded
-             For (;;) { /* infinite loop } */ /*
-             For (; choice < 10; ++choice) {}
-
-             May have multiples of each expression
-             for (int x = 0, int y = 10; x < 20 && y > 0; ++x, --y)
-             {}
-
-             int genreCount = 0;
-             while (genreCount < 5)
-             int count = 0;
-             For statement
-              for_stmt ::= for ( [init-expr] ; [test-expr] ; [update-expr]) S
-              init-expr ::= E (can be multiple, separated by commas, generally a variable decl
-              test-expr ::= Eb (can be multiple, separated by commas)
-              update-expr ::= E (can be multiple, separated by commas, generally prefix/postfix inc/dec) */
-
-            for (int count = 0; count < 5; ++count)
-            {
-                std::string genre;
-                std::getline(std::cin, genre);
-
-                // if (genre == "")
-                //  continue;
-
-
-                if (genre != "")
-                    continue;
-
-                /* {
-                    movie.genres += ", " + genre;
-                     ++genreCount
-                 else
-                     genreCount = 5
-                     count
-                    break; */
-            }
-
-            // HACK: fix this
-            std::cout << "Enter run length (in minutes): ";
-
-            // do-while
-            //      post-test, S executes at least once
-            // 
-             // movie.runLength = -1;
-            // while (movie.runLength < 0)
-            do
-            {
-                std::cin >> movie.runLength;
-
-                // Runlength >= 0
-                if (movie.runLength < 0)
-                {
-                    std::cout << "ERROR: Run length must be at least 0" << std::endl;
-                    // movie.runLength = 0;
-                }
-            } while (movie.runLength < 0);
-
-            std::cout << "enter release year (1900-2100): ";
-
-            // ReleaseYear >= 1900 <= 2100
-            while (movie.releaseYear < 1900 || movie.releaseYear > 2100)
-            {
-                std::cin >> movie.releaseYear;
-
-                if (movie.releaseYear < 1900 || movie.releaseYear > 2100)
-                {
-                    std::cout << "Error: Release Year must be between 1900 and 2100" << std::endl;
-                    // movie.releaseYear = 1900;
-                }
-            }
-
-            std::cout << "Enter the user rating (1.0-5.0): ";
-            std::cin >> movie.userRating;
-
-            char isClassic;
-            std::cout << "Is classic (Y/N): ";
-
-            bool done = false;
-            // while (!done)
-            do
-            {
-                std::cin >> isClassic;
-
-                if (isClassic == 'Y' || isClassic == 'y')
-                {
-                    movie.isClassic = true;
-                    // done = true;
-                    break;
-                } else if (isClassic == 'N' || isClassic == 'n')
-                {
-                    movie.isClassic = false;
-                    done = true;
-                } else
-                    std::cout << "ERROR: Must be Y or N" << std::endl; // != Y y N n
-            } while (true);
-            break;
         }
 
-        // case 'E':
-        case MenuCommand::Edit: std::cout << "Edit not impemented" << std::endl; break;
-
-
-        // case 'D': // std::cout << "Delete not implemented" << std::endl; break;
-        case MenuCommand::Delete:
+        switch (input)
         {
-            // No movie, no work
-            if (movie.title == "")
+
+            case MenuCommand::Add:
+            {
+                // Add movie logic
+                // Reset input buiffer
+                std::cin.ignore(INT32_MAX, '\n');
+
+                // Prompt for movie details
+                std::cout << "Enter title (required): ";
+                while (movie.title == "")
+                {
+                    std::getline(std::cin, movie.title);
+
+                    // Validate title
+                    if (movie.title == "")
+                        std::cout << "ERROR: Title is required" << std::endl;
+                }
+
+                std::cout << "Enter description: ";
+                std::getline(std::cin, movie.description);
+
+                std::cout << "Enter genre: ";
+
+
+
+                for (int count = 0; count < 5; ++count)
+                {
+                    std::string genre;
+                    std::getline(std::cin, genre);
+
+                    if (genre != "")
+                        continue;
+
+
+                }
+
+                // HACK: fix this
+                std::cout << "Enter run length (in minutes): ";
+
+
+                do
+                {
+                    std::cin >> movie.runLength;
+
+                    // Runlength >= 0
+                    if (movie.runLength < 0)
+                    {
+                        std::cout << "ERROR: Run length must be at least 0" << std::endl;
+                        // movie.runLength = 0;
+                    }
+                } while (movie.runLength < 0);
+
+                std::cout << "enter release year (1900-2100): ";
+
+                // ReleaseYear >= 1900 <= 2100
+                while (movie.releaseYear < 1900 || movie.releaseYear > 2100)
+                {
+                    std::cin >> movie.releaseYear;
+
+                    if (movie.releaseYear < 1900 || movie.releaseYear > 2100)
+                    {
+                        std::cout << "Error: Release Year must be between 1900 and 2100" << std::endl;
+                       
+                    }
+                }
+
+                std::cout << "Enter the user rating (1.0-5.0): ";
+                std::cin >> movie.userRating;
+
+                char isClassic;
+                std::cout << "Is classic (Y/N): ";
+
+                bool done = false;
+                // while (!done)
+                do
+                {
+                    std::cin >> isClassic;
+
+                    if (isClassic == 'Y' || isClassic == 'y')
+                    {
+                        movie.isClassic = true;
+                        // done = true;
+                        break;
+                    } else if (isClassic == 'N' || isClassic == 'n')
+                    {
+                        movie.isClassic = false;
+                        done = true;
+                    } else
+                        std::cout << "ERROR: Must be Y or N" << std::endl; // != Y y N n
+                } while (true);
                 break;
+            }
 
-            //c confirm
-            std::cout << "Are you sure you want to delete '" << movie.title << "' (Y/N)? ";
-            
-            bool confirm = false; 
-            do
+            // case 'E':
+            case MenuCommand::Edit: std::cout << "Edit not impemented" << std::endl; break;
+
+
+                ;
+            case MenuCommand::Delete:
             {
-                char choice;
-                std::cin >> choice;
-                if (choice == 'Y' || choice == 'y')
+                // No movie, no work
+                if (movie.title == "")
+                    break;
+
+                //c confirm
+                std::cout << "Are you sure you want to delete '" << movie.title << "' (Y/N)? ";
+
+                bool confirm = false;
+                do
                 {
-                    confirm = true;
-                } else if (choice == 'N' || choice == 'n')
+                    char choice;
+                    std::cin >> choice;
+                    if (choice == 'Y' || choice == 'y')
+                    {
+                        confirm = true;
+                    } else if (choice == 'N' || choice == 'n')
+                    {
+                        confirm = false;
+                        break;
+                    };
+                } while (true);
+
+                // Delete
+                if (confirm)
+                    movie.title = "";
+
+
+                break;
+            }
+
+
+            case MenuCommand::View:
+            {
+                if (movie.title == "")
                 {
-                    confirm = false;
+                    std::cout << "No movies in library" << std::endl;
                     break;
                 };
-            } while (true);
 
-            // Delete
-            if (confirm)
-                movie.title = "";
+                // Display movie details
+                std::cout << movie.title << " (" << movie.releaseYear << ")" << std::endl;
+                std::cout << "Length (in minutes) " << movie.runLength << std::endl;
+                std::cout << "Genre(s): " << movie.genres << std::endl;
+                std::cout << "User Rating: " << movie.userRating << std::endl;
 
 
-            break;
-        }
 
-        //case 'V': // std::cout << "View not implemented" << std::endl; break;
-        case MenuCommand::View:
-        {
-            if (movie.title == "")
-            {
-                std::cout << "No movies in library" << std::endl;
+                std::cout << "Classic? " << (movie.isClassic ? "Yes" : "No") << std::endl;
+
+                std::cout << movie.description << std::endl;
                 break;
-            };
+            }
 
-            // Display movie details
-            std::cout << movie.title << " (" << movie.releaseYear << ")" << std::endl;
-            std::cout << "Length (in minutes) " << movie.runLength << std::endl;
-            std::cout << "Genre(s): " << movie.genres << std::endl;
-            std::cout << "User Rating: " << movie.userRating << std::endl;
+            case MenuCommand::Quit: quit = true; break;
 
+            // Everything else
+            default: std::cout << "ERROR: Invalid Option" << std::endl; break;
 
-            // Conditional operator
-                //  conditional_op ::= Eb ? Et : Ef
-                // Replaces if-else when calculating a value
-                // Et and Ef must be same type
-                // Syntax may cause compiler errors in some cases so wrap in parens if necessary
-                //std::string classicIndicator = "No";
-                //if (movie.isClassic)
-                //    classicIndicator = "Yes";
-                //std::string classicIndicator = movie.isClassic ? "Yes" : "No";
-
-            std::cout << "Classic? " << (movie.isClassic ? "Yes" : "No") << std::endl;
-
-            std::cout << movie.description << std::endl;
-            break;
         }
 
-        case MenuCommand::Quit: quit = true; break;
 
-        // Everything else
-        default: std::cout << "ERROR: Invalid Option" << std::endl; break;
+        // Add movie logic
+        Movie movie;
 
-    }
+        std::cin.ignore(INT32_MAX, '\n');
+        //Prompt for movie details
+        std::cout << "Enter title (required): ";
 
-    // Logical operators
-    //  log_expr ::= Eb log_op Eb
-    //              | ! Eb
-    //  log_op   ::= && ||
 
-    // Add movie logic
-    Movie movie;
-
-    std::cin.ignore(INT32_MAX, '\n');
-    //Prompt for movie details
-    std::cout << "Enter title (required): ";
-    
-
-    while (movie.title == "")
-    {
-        std::getline(std::cin, movie.title);
-
-        //Validate title
-        if (movie.title == "")
-            std::cout << "ERROR: Title is required" << std::endl;
-    }
-
-    std::cout << "Enter description: ";
-    std::getline(std::cin, movie.description);
-
-    std::cout << "Enter genres: ";
-    std::getline(std::cin, movie.genres);
-
-    // HACK: fix this
-    std::cout << "Enter run length (in minutes): ";
-    movie.runLength = -1;
-    while (movie.runLength < 0)
-    {
-        std::cin >> movie.runLength;
-
-        //Runlength >= 0
-        if (movie.runLength < 0)
+        while (movie.title == "")
         {
-            std::cout << "ERROR: Run length must be at least 0" << std::endl;
-            // movie.runLength = 0;
+            std::getline(std::cin, movie.title);
+
+            //Validate title
+            if (movie.title == "")
+                std::cout << "ERROR: Title is required" << std::endl;
         }
+
+        std::cout << "Enter description: ";
+        std::getline(std::cin, movie.description);
+
+        std::cout << "Enter genres: ";
+        std::getline(std::cin, movie.genres);
+
+        // HACK: fix this
+        std::cout << "Enter run length (in minutes): ";
+        movie.runLength = -1;
+        while (movie.runLength < 0)
+        {
+            std::cin >> movie.runLength;
+
+            //Runlength >= 0
+            if (movie.runLength < 0)
+            {
+                std::cout << "ERROR: Run length must be at least 0" << std::endl;
+                // movie.runLength = 0;
+            }
+        }
+
+        std::cout << "Enter release year (1900-2100): ";
+        std::cin >> movie.releaseYear;
+
+
+        if (movie.releaseYear < 1900 || movie.releaseYear > 2100)
+        {
+            std::cout << "ERROR: Release Years must be between 1900 and 2100" << std::endl;
+            movie.releaseYear = 1900;
+        }
+
+        std::cout << "Enter the user rating (1.0-5.0): ";
+        std::cin >> movie.userRating;
+
+        char isClassic;
+        std::cout << "Is classic (Y/N)? ";
+        std::cin >> isClassic;
+
+        if (isClassic == 'Y' || isClassic == 'y')
+            movie.isClassic = true;
+        else if (isClassic == 'N' || isClassic == 'n')
+            movie.isClassic = false;
+        else
+        {
+            std::cout << "ERROR: Must be Y or N" << std::endl; // != Y y N n
+            movie.isClassic = false;
+        }
+
+
+        //Display movie details
+        std::cout << movie.title << " (" << movie.releaseYear << ")" << std::endl;
+        std::cout << "Length (in minutes) " << movie.runLength << std::endl;
+        std::cout << "Genre(s): " << movie.genres << std::endl;
+        std::cout << "User Rating: " << movie.userRating << std::endl;
+
+
+        std::cout << "Classic? " << (movie.isClassic ? "Yes" : "No") << std::endl;
+
+        std::cout << movie.description << std::endl;
     }
-
-    std::cout << "Enter release year (1900-2100): ";
-    std::cin >> movie.releaseYear;
-
-    //ReleaseYear >= 1900 and <= 2100
-    /* if (movie.releaseYear < 1900)
-    {
-        std::cout << "ERROR: Release Year must be at least 1900" << std::endl;
-        movie.releaseYear = 1900;
-    }
-    if (movie.releaseYear > 2100)
-    {
-        std::cout << "ERROR: Release Year must be no more than 2100" << std::endl;
-        movie.releaseYear = 1900;
-    } */
-    // if A && B || C && D)
-    // if ((A && B) || (C && D))
-    // if (A || B && C || D)
-    // if (A || (B && C) || D)
-    if (movie.releaseYear < 1900 || movie.releaseYear > 2100)
-    {
-        std::cout << "ERROR: Release Years must be between 1900 and 2100" << std::endl;
-        movie.releaseYear = 1900;
-    }
-
-    std::cout << "Enter the user rating (1.0-5.0): ";
-    std::cin >> movie.userRating;
-
-    char isClassic;
-    std::cout << "Is classic (Y/N)? ";
-    std::cin >> isClassic;
-
-    // If statement
-    //    if_stmt ::= if (Eb) S;
-    //                [ else S ] ;
-    // Else always goes with immediately preceding if 
-    //
-    //Translate to boolean if input is Y then true
-    // movie.isClassic = isClassic == 'Y' || isClassic == 'y';
-    if (isClassic == 'Y' || isClassic == 'y')
-        movie.isClassic = true;
-    else if (isClassic == 'N' || isClassic == 'n')
-        movie.isClassic = false;
-    else
-    {
-        std::cout << "ERROR: Must be Y or N" << std::endl; // != Y y N n
-        movie.isClassic = false;
-    }
-    // if (isClassic == 'y')
-    //    movie.isClassic = true;
-
-    //Validate classic
-    /* if (isClassic != 'Y')
-        if (isClassic != 'y')
-            if (isClassic != 'N')
-                if (isClassic != 'n') */
-    // if (isClassic != 'Y' && isClassic != 'y' && isClassic != 'N' && isClassic != 'n')
-    //                std::cout << "ERROR: Must be Y or N" << std::endl; // != Y y N n
-
-    //Display movie details
-    std::cout << movie.title << " (" << movie.releaseYear << ")" << std::endl;
-    std::cout << "Length (in minutes) " << movie.runLength << std::endl;
-    std::cout << "Genre(s): " << movie.genres << std::endl;
-    std::cout << "User Rating: " << movie.userRating << std::endl;
-
-    //std::string classicIndicator = "No";
-    //if (movie.isClassic)
-    //    classicIndicator = "Yes";
-    // std::string classicIndicator = movie.isClassic ? "Yes" : "No";
-    std::cout << "Classic? " << (movie.isClassic ? "Yes" : "No") << std::endl;
-
-    std::cout << movie.description << std::endl;
-
-    /* 
-
-     NOTES:
-     Conditional Operator: E(Booleen) ? V(True) : V(False) - Good for calculating one of two values 
-                                                           - Both Values of the variables in the conditional operator must be of the same type
-                                                           - Will NOT do type coercion. (But you can type cast)
-                                                           - The compiler may confuse itself when distinguishing a conditional operator. Best course of action is to use parenthesis   
-
-     Switch Statements: Switch (Expression)
-     {
-          case Label(1) : S (statement);
-          case Label(2) : S (statement);
-          ..
-     }
-                  - Basically a glorified if else if statement
-                  - The most advanced variant, can only be used under certain cases. 
-
-     Enumeration -> Subrange of an int
-
-
-     prefix increiment ++x Both incriment my variable by one
-     postfix increment X++
-
-     prefix decriment --x both decriment my variable by one
-     postfix decriment x--
-          ONLY VARIABLES ARE ALLOWED
-
-     TABLE
-     OP               Syntax              X'          Expression Returns
-     Prefix inc       ++x                 x+1         X'
-     Postfix inc      x++                 x+1         temp = x
-    
-     prefix dec       --x                 x-1         X' 
-     postfix dec      x++                 x-1         X'
-
-     Table:         Pre / Post      S
-     While          Ore             0+  - General purpose
-     For            Pre             0+  - Fixed iterations
-     Do-while       Post            0+  - At least once 
-
-     Relational demo
-     Relational operators
-     rel_expr ::= Eb rel_op Eb => bool
-     rel_op ::= > >= < <= == !=
-     Precedence => below arithmetic but above equality, left associative
-     bool isGreater = 4 > 5;  false
-     isGreater = 10 >= 3;     true
-
-     int x = 10, y = 20;
-     bool areEqual = x == y;     Equality
-     bool areNotEqual = x != y;  Inequality
-
-     Common C code for boolean since it didn't support it
-     int isCorrect = 0;  false
-     isCorrect = 10;     true
-
-     areEqual = x == y;  false, equality
-     areEqual = x = y;    true, assignment
-
-     areEqual = x == 10;
-     areEqual = x = 10;
-
-     When comparing to constants put the constant first
-     areEqual = 10 == x;
-     areEqual = 10 = x;
-
-     (In)Equality with floating point types
-     float f1 = 1 / 3;
-     float f2 = 100 / (100 / 30 * 100);
-
-     Do not use with floating point values
-     areEqual = f1 == f2;  Mathematically equal
-     areEqual = f1 >= f2;
-
-     Can use with floating point with integer
-     f1 = 100.0;
-     areEqual = f1 == 100;   True
-
-     Strings - works with relational
-       Numeric comparison
-       Case sensitive
-       Locale insensitive (not good for sorting)
-     std::string firstName = "Bob";
-     std::string lastName = "bob";
-     bool isSingularName = firstName == lastName;
-
-     Case insensitive string comparison
-     Use .c_str() to convert C++ string to C
-     int result = _strcmpi("Bob", "bob");
-     isSingularName = _strcmpi(firstName.c_str(), lastName.c_str()) == 0;  //Not equal != 0 */
 }
+
+/*
+
+NOTES:
+Conditional Operator: E(Booleen) ? V(True) : V(False) - Good for calculating one of two values
+    - Both Values of the variables in the conditional operator must be of the same type
+    - Will NOT do type coercion. (But you can type cast)
+    - The compiler may confuse itself when distinguishing a conditional operator. Best course of action is to use parenthesis
+
+Switch Statements: Switch (Expression)
+{
+    case Label(1) : S (statement);
+    case Label(2) : S (statement);
+    ..
+}
+    - Basically a glorified if else if statement
+    - The most advanced variant, can only be used under certain cases.
+
+Enumeration -> Subrange of an int
+
+
+prefix increiment ++x Both incriment my variable by one
+postfix increment X++
+
+prefix decriment --x both decriment my variable by one
+postfix decriment x--
+    ONLY VARIABLES ARE ALLOWED
+
+TABLE
+
+OP               Syntax              X'          Expression Returns
+Prefix inc       ++x                 x+1         X'
+Postfix inc      x++                 x+1         temp = x
+
+prefix dec       --x                 x-1         X'
+postfix dec      x++                 x-1         X'
+
+Table:         Pre / Post      S
+While          Pre             0+  - General purpose
+For            Pre             0+  - Fixed iterations
+Do-while       Post            0+  - At least once
+
+Relational demo
+Relational operators
+rel_expr ::= Eb rel_op Eb => bool
+rel_op ::= > >= < <= == !=
+Precedence => below arithmetic but above equality, left associative
+bool isGreater = 4 > 5;  false
+isGreater = 10 >= 3;     true
+
+int x = 10, y = 20;
+bool areEqual = x == y;     Equality
+bool areNotEqual = x != y;  Inequality
+
+Common C code for boolean since it didn't support it
+int isCorrect = 0;  false
+isCorrect = 10;     true
+
+areEqual = x == y;  false, equality
+areEqual = x = y;    true, assignment
+
+areEqual = x == 10;
+areEqual = x = 10;
+
+When comparing to constants put the constant first
+areEqual = 10 == x;
+areEqual = 10 = x;
+
+(In)Equality with floating point types
+float f1 = 1 / 3;
+float f2 = 100 / (100 / 30 * 100);
+
+Do not use with floating point values
+areEqual = f1 == f2;  Mathematically equal
+areEqual = f1 >= f2;
+
+Can use with floating point with integer
+f1 = 100.0;
+areEqual = f1 == 100;   True
+
+Strings - works with relational
+Numeric comparison
+Case sensitive
+Locale insensitive (not good for sorting)
+std::string firstName = "Bob";
+std::string lastName = "bob";
+bool isSingularName = firstName == lastName;
+
+Case insensitive string comparison
+Use .c_str() to convert C++ string to C
+int result = _strcmpi("Bob", "bob");
+isSingularName = _strcmpi(firstName.c_str(), lastName.c_str()) == 0;  //Not equal != 0 */
