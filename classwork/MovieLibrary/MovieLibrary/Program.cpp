@@ -36,13 +36,19 @@ enum class MenuCommand
 };
   
 
-
+void Multiply(int value, int multiple)
+{
+    // value = value * multiple
+    value *= multiple;
+}
 
 /// @brief Displays a horizontal line.
-void DisplayLine()
+/// @param width Width of the line. 
+void DisplayLine(int width )
 {
+    // int width = 10
     // logical operation
-    std::cout << "------------" << std::endl;
+    std::cout << std::setfill('-') << std::setw(width) << "" << std::setfill(' ') << std::endl;
 };
 
 /// @brief Resets the output text colors to their default values.
@@ -57,11 +63,85 @@ void ClearInputBuffer()
     std::cin.ignore(INT32_MAX, '\n'); 
 };
 
-/// @brief Sets the output colors of error messages to red.
-void SetErrorColor()
+enum class ConsoleColor
 {
-    std::cout << "\033[91m";
+    Black = 30,
+    Red = 31,
+    Green = 32,
+    Yellow = 33,
+    Blue = 34,
+    Magenta = 35,
+    Cyan = 36,
+    White = 37,
+
+    BrightBlack = 90,
+    BrightRed = 91,
+    BrightGreen = 92,
+    BrightYellow = 93,
+    BrightBlue = 94,
+    BrightMagenta = 95,
+    BrightCyan = 96,
+    BrightWhite = 97,
 };
+
+/// @brief Sets the output colors for displaying errors.
+/// @param color Color to use for the foreground.
+void SetForegroundColor ( ConsoleColor color )
+{
+    char buffer[10] = {0};
+    _itoa_s((int)color, buffer, 10, 10);
+
+    
+    std::string value = "\033[";
+    value += buffer;
+    value += "m";
+
+    std::cout << value;
+};
+
+/// @brief Displays an error message.
+/// @param message Message to display.
+void DisplayError(std::string message)
+{
+    SetForegroundColor(ConsoleColor::BrightRed);
+    std::cout << "ERROR: " << message << std::endl;
+    ResetColors();
+}
+
+/// @brief Displays a warning message.
+/// @param message Message to display.
+void DisplayWarning(std::string message)
+{
+    SetForegroundColor(ConsoleColor::Yellow);
+    std::cout << message << std::endl;
+    ResetColors();
+}
+
+/// @brief Displays a message
+/// @param color Color to show the message in 
+/// @param message Message to display
+/// @param inlcludeNewLine Add a new line?
+void DisplayMessage(ConsoleColor color, std::string message, bool includeNewLine)
+{
+    SetForegroundColor(color);
+
+    std::cout << message;;
+    if (includeNewLine)
+        std::cout << std::endl;
+    ResetColors();
+}
+
+void Fibonacci(int value)
+{
+    if (value >= 1)
+    {
+        // 1 * 2 * 3 * N
+        // value * Fibonacci(value - 1);
+        std::cout << value << std::endl;
+        Fibonacci(value - 1);
+    };
+    
+}
 
 // Main is a special fucntion
 //     - It is the entry function of your program
@@ -69,6 +149,13 @@ void SetErrorColor()
 //     - You cannot call main directly
 void main()
 {
+    // Fibonacci(3);
+
+    /* int input = 10;
+    int multiple = 5;
+    Multiply(input, multiple);
+    std::cout << input << std::endl; */
+
     Movie movie;
 
     bool quit = false;
@@ -77,7 +164,7 @@ void main()
         // Display menu
         std::cout << "Main Menu" << std::endl;
         // std::cout << "------------" << std::endl;
-        DisplayLine();
+        DisplayLine(10);
         std::cout << "A)dd Movie" << std::endl;
         std::cout << "E)dit Movie" << std::endl;
         std::cout << "D)elete Movie" << std::endl;
@@ -113,9 +200,10 @@ void main()
 
                 default:
                 {
-                    SetErrorColor();
-                    std::cout << "ERROR: Invalid option" << std::endl;
-                    ResetColors();
+                    // SetForegroundColor(ConsoleColor::BrightRed);
+                    // std::cout << "ERROR: Invalid option" << std::endl;
+                    // ResetColors();
+                    DisplayError("Invalid Option");
                     break;
                 }
             }
@@ -139,7 +227,7 @@ void main()
 
                     // Validate title
                     if (movie.title == "")
-                        std::cout << "ERROR: Title is required" << std::endl;
+                        DisplayError("Title is required");
                 }
 
                 std::cout << "Enter description: ";
@@ -152,11 +240,20 @@ void main()
                     std::string genre;
                     std::getline(std::cin, genre);
 
+                    // if (genre != "")
+                    //    continue;
+
+                    //movie.genres += ", " + genre;
                     if (genre != "")
-                        continue;
-
-
+                    {
+                        movie.genres += ", " + genre;
+                        // ++genreCount:
+                    } else
+                        // genreCount = 5
+                        // count = 5
+                        break;
                 }
+
 
                 // HACK: fix this
                 std::cout << "Enter run length (in minutes): ";
@@ -169,7 +266,7 @@ void main()
                     // Runlength >= 0
                     if (movie.runLength < 0)
                     {
-                        std::cout << "ERROR: Run length must be at least 0" << std::endl;
+                        DisplayError("Run length must be at least 0");
                         // movie.runLength = 0;
                     }
                 } while (movie.runLength < 0);
@@ -183,7 +280,7 @@ void main()
 
                     if (movie.releaseYear < 1900 || movie.releaseYear > 2100)
                     {
-                        std::cout << "Error: Release Year must be between 1900 and 2100" << std::endl;
+                        DisplayError("Release year must be between 1900 - 2100");
                        
                     }
                 }
@@ -210,13 +307,13 @@ void main()
                         movie.isClassic = false;
                         done = true;
                     } else
-                        std::cout << "ERROR: Must be Y or N" << std::endl; // != Y y N n
+                        DisplayError("Must be Y (y) or N (n)"); // != Y y N n
                 } while (true);
                 break;
             }
 
             // case 'E':
-            case MenuCommand::Edit: std::cout << "Edit not impemented" << std::endl; break;
+            case MenuCommand::Edit: DisplayWarning("Edit not implemented");
 
 
                 ;
@@ -226,9 +323,12 @@ void main()
                 if (movie.title == "")
                     break;
 
-                //c confirm
-                std::cout << "Are you sure you want to delete '" << movie.title << "' (Y/N)? ";
-
+                // Confirm
+                // std::cout << "Are you sure you want to delete '" << movie.title << "' (Y/N)? ";
+                std::string message = "Are you sure you want to delete '";
+                message += movie.title;
+                message += "' (Y/N)? ";
+                DisplayMessage(ConsoleColor::Cyan, message, false);
                 bool confirm = false;
                 do
                 {
@@ -257,7 +357,8 @@ void main()
             {
                 if (movie.title == "")
                 {
-                    std::cout << "No movies in library" << std::endl;
+                    //std::cout << "No movies in library" << std::endl;
+                    DisplayWarning("No movies in library");
                     break;
                 };
 
@@ -278,8 +379,7 @@ void main()
             case MenuCommand::Quit: quit = true; break;
 
             // Everything else
-            default: std::cout << "ERROR: Invalid Option" << std::endl; break;
-
+            default: DisplayError("Invalid Option"); break;
         }
 
 
@@ -297,7 +397,7 @@ void main()
 
             //Validate title
             if (movie.title == "")
-                std::cout << "ERROR: Title is required" << std::endl;
+                DisplayError("Title is required");
         }
 
         std::cout << "Enter description: ";
@@ -316,7 +416,7 @@ void main()
             //Runlength >= 0
             if (movie.runLength < 0)
             {
-                std::cout << "ERROR: Run length must be at least 0" << std::endl;
+                DisplayError("Run length must be at least 0");
                 // movie.runLength = 0;
             }
         }
@@ -327,7 +427,7 @@ void main()
 
         if (movie.releaseYear < 1900 || movie.releaseYear > 2100)
         {
-            std::cout << "ERROR: Release Years must be between 1900 and 2100" << std::endl;
+            DisplayError("Release year must be between 1900 - 2100");
             movie.releaseYear = 1900;
         }
 
@@ -344,7 +444,7 @@ void main()
             movie.isClassic = false;
         else
         {
-            std::cout << "ERROR: Must be Y or N" << std::endl; // != Y y N n
+            DisplayError("Must be Y(y) or N(n)"); // != Y y N n
             movie.isClassic = false;
         }
 
@@ -462,6 +562,13 @@ Function definition - Defines a funcrtion and its implementation
       functions are actiosn that should be named as verbs
  - casing: camel or PascalCasing
 
+ // DEFINITION (PARAMETER): Variable inside the function definition (Also called formal argument)
+ // parameter ::= input to a function
+ // parm_list: param {, param}*
+ // parameter ::= T id
+
+ // DEFINITION (Argument): Value passed to a function in the function call (Also called actual argument)
+
 func_def ::= void id ()
 {
     Statement
@@ -470,4 +577,8 @@ func_def ::= void id ()
 Function Call: func_call ::= id(arguments)
 
 args ::= E {, E }*
+
+Parameter Kind                      C++
+Input parameter (Pass by value)     T)ype id
+
 */
