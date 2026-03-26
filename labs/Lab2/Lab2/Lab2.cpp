@@ -32,7 +32,7 @@ void main()
 
     std::cout << std::endl;
 
-    // Loan amount prompt
+    // Prompting the user for the loan amount
     std::cout << "Please enter your loan amount: ";
     std::cin >> loanAmount;
 
@@ -43,7 +43,7 @@ void main()
         std::cin >> loanAmount;
     }
 
-    // Prompting user for interest rate.
+    // Prompting the user for interest rate.
     std::cout << "Enter Your Interest Rate (%): ";
     std::cin >> interestRatePercentage;
 
@@ -78,13 +78,13 @@ void main()
     std::cout << std::left << std::fixed;
     std::cout << std::setprecision(2);
 
-    // Table headers & line
+    // Program for the table headers and underline. 
     std::cout << std::setw(10) << "Month " << std::setw(13) << "Balance " << std::setw(13) << "Payment " << std::setw(13) << "Interest " << std::setw(20) << "New Balance " << std::endl;
     std::cout << std::setfill('-') << std::setw(65) << "" << std::setfill(' ') << std::endl;
 
     balance = loanAmount;
 
-    // For loop for the 12 months of the year. 
+    // For-loop for the 12 months of the year. 
     for (int month = 1; month <= 12; ++month)
     {
         if (month == 1)
