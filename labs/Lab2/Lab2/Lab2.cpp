@@ -102,7 +102,6 @@ void main()
             balance = (balance - monthlyPayment);
             if (balance == 0)
             {
-                balance = 0;
                 interest = 0;
                 newBalance = 0;
             }        
