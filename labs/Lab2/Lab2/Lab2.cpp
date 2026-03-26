@@ -114,7 +114,7 @@ void main()
         }
 
         // Displays the rows for the table
-        std::cout << std::setw(10) << month
+        std::cout << std::setw(9) << month
             << " $ " << std::setw(10) << balance
             << " $ " << std::setw(10) << (month == 1 ? 0.0 : monthlyPayment)
             << " $ " << std::setw(10) << interest
