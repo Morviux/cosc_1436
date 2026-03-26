@@ -131,3 +131,5 @@ void main()
     std::cout << "Total Payments: $ " << totalPayments << std::endl;
     std::cout << "Total Interest: $ " << totalInterest << std::endl;
 }
+
+// This.. was really hard, I can't lie. Making the loop sucked even more.
