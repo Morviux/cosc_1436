@@ -107,8 +107,8 @@ void main()
             }        
             else
             {
-                interest = balance * interestRatePercentage;
-                newBalance = balance + interest;
+                interest = (balance * interestRatePercentage);
+                newBalance = (balance + interest);
             }
         }
 
