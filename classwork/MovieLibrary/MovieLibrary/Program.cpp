@@ -83,37 +83,24 @@ void DisplayWarning(std::string);
 void ResetColors();
 void SetForegroundColor(ConsoleColor);
 
-//void SuperMultiply(int, int);
+/* Variables
+      Local - Declared inside a function and has a lifetime tied to the function call
+      Global - Declared outside a function and has a program lifetime
+               Used when multiple functions need access to data that is impractical to pass as parameters
+      Issues with globals (and why you will not use them, especially in this class)
+      1. Functions are no longer isolated
+      2. Initialization order is undefined
+      3. Anybody can read / write them
+*/
 
-//void Multiply(int value, int multiple)
-//{
-//    SuperMultiply(value, multiple);
-//
-//    // value = value * multiple
-//    value *= multiple;    
-//}
 
-// Variables 
-//      Local - Declared inside a function and has a lifetime tied to the function call
-//      Global - Declared outside a function and has a program lifetime
-//               Used when multiple functions need access to data that is impractical to pass as parameters
-//      Issues with globals (and why you will not use them, especially in this class)
-//      1. Functions are no longer isolated
-//      2. Initialization order is undefined
-//      3. Anybody can read / write them
-//      4. 
-
-/* int g_standardConsoleLineLenth = 80;
-int g_maximumLineLength = g_standardConsoleLineLenth; */
-const int g_maximumLineLength = 80; //Only allowed case for a constant
+const int g_maximumLineLength = 80; // Only allowed case for a constant
 
 
 /// @brief Displays a horizontal line.
 /// @param width Width of the line
 void DisplayLine(int width)
 {
-    // int maximumLineLength = -1;
-
     {
         double width = 24;
         int someValue = width * g_maximumLineLength;
@@ -187,20 +174,6 @@ void SetForegroundColor(ConsoleColor color)
     std::cout << value;
 };
 
-//Demoing when recursive calls never end
-// return - exits function immediately
-void Fibonacci(int value)
-{
-    //Validate parameters
-    if (value < 1)
-        return;
-
-    //1 * 2 * 3 * N
-    //value * Fibonacci(value - 1);
-    std::cout << value << std::endl;
-    Fibonacci(value - 1);
-}
-
 /// @brief Confirms information from the user
 /// @param message Message to display
 /// @return true if yes or false if no
@@ -216,15 +189,9 @@ bool Confirm(std::string message)
         std::cin >> choice;
         if (choice == 'Y' || choice == 'y')
             return true;
-        /*{
-            confirm = true;
-            break;*/
         else if (choice == 'N' || choice == 'n')
             return false;
-        /*{
-            confirm = false;
-            break;
-        };*/
+        
     } while (true);
 
     //return false;
@@ -253,11 +220,6 @@ int ReadInt(std::string message, int minValue)
     return ReadInt(message, minValue, INT32_MAX);
 }
 
-int ReadInt(std::string message, int maxValue)
-{
-
-}
-
 /// @brief Reads a string from the user
 /// @param message Message to display
 /// @param required true to indicate a required value
@@ -279,10 +241,10 @@ std::string ReadString(std::string message, bool required)
     } while (true);
 }
 
-// Function Oveloading - Overloading a function's name by parameter types
-// 1) Each overload must use the same name
-// 2) Each overload must have one parameter type that is different
-// 3) 
+/* Function Oveloading - Overloading a function's name by parameter types
+ 1) Each overload must use the same name
+ 2) Each overload must have one parameter type that is different
+ 3) */
 
 /// @brief Reads an optional string
 /// @param message Message to display
@@ -294,8 +256,6 @@ std::string ReadString(std::string message)
 
 Movie AddMovie()
 {
-    //Reset input buffer
-    //std::cin.ignore(INT32_MAX, '\n');
     ClearInputBuffer();
 
     Movie movie;
@@ -334,14 +294,6 @@ void DeleteMovie(Movie& movie)
     // No movie = no work
     if (movie.title == "")
         return;
-
-    // Calling a function returning a value
-    //bool confirm = Confirm("Are you sure you want to delete '" + movie.title + "'");
-
-    //Confirm("Hello");
-
-    //Delete
-    //if (confirm)
     if (Confirm("Are you sure you want to delete '" + movie.title + "'"))
         movie.title = "";
 }
@@ -353,7 +305,6 @@ void ViewMovie(Movie const& movie)
     //Movie must exist
     if (movie.title == "")
     {
-        //std::cout << "No movies in library" << std::endl;
         DisplayWarning("No movies in library");
         return;
     }
@@ -368,27 +319,84 @@ void ViewMovie(Movie const& movie)
     std::cout << movie.description << std::endl;
 }
 
-// Main is a special function
-// - It is the entry function of your program
-// - It's declaration can vary slightly
-// - You cannot call main directly
+void ArrayDemo()
+{
+    const int maximumValues = 10;
+    int values[maximumValues];
+
+    // Accessign array elements
+    //      Array_element ::= array[index]
+    //      index ::= Ei
+    // You can read and write the element values 
+
+    // The value inside of the square brackets is called the 'Index' (Heh. Index, like the index in warframe)
+    // Index is always zero-based
+    //      Index 0 = Element 1
+    //      Index 1 = Element 2
+    //      Index 2 = Element 3
+    //      Index N = Element N+1
+    // Given an array of size M
+    //   There are M elements ranging from 1-M
+    //   Index is 0 to M - 1
+    int thirdElement = values[2];
+
+    values[0] = 10;
+    values[1] = 20; 
+    values[2] = 30;
+
+    // Iterate the elements in an array (0.. < size)
+    // There is no way at run-time to correctly determine number of elements in the array
+    for (int index = 0; index < maximumValues; ++index)
+    // int index = 0;
+    // for (int& value: values)
+    {
+        values[index] = index * 10;
+        // value = index++ * 10;
+    }
+
+    // For-range statement | ::= for (Type Id : ArrayName)
+    // Only works if the array is declared within the same function
+    // for (int index = 0; index < maximumValues; ++index)
+    for (int value: values)
+    {
+        // int value = values[index];
+        // std::cout << values[index] << " ";
+        std::cout << value << " ";
+        value = 0;
+    }
+}
+
 void main()
 {
-    //Fibonacci(3);
+    // ArrayDemo();
 
-    /*int input = 10;
-    int multiple = 5;
-    Multiply(input, multiple);
-    std::cout << input << std::endl;*/
+    // TODO: Remove once no longer used
+    // Movie movie;
+    // Movie movie2, movie3, movie4; // Support more than one movie
+    const int maximumMovies = 100;
+    Movie movies[maximumMovies];        // Stores five movies
 
-    Movie movie;
+    // Array Declarations Type Identifier Name [Expression (Integer)];
+    //  All elements have the same type
+    //  DO NOT USE to store unrelated values just to save variables
+    //  Value inside the brackets is the size, number of elements, in the array
+    //  Size must be:
+    // 1. a compile-time constant
+    // 2. > than 0
+    // 3. Must be an integer
+    
+    // IMPORTANT:
+    // Array is NOT part of the type
+    // Other names for arrays: Collection, vector, list, set, array
 
+    // All arrays store their elements continuously in memory
+    // Local variables are stored on stack so be careful of stack space
+       
     bool quit = false;
     while (!quit)
     {
         // Display menu
         std::cout << "Main Menu" << std::endl;
-        //std::cout << "------------" << std::endl;
         DisplayLine(10);
         std::cout << "A)dd Movie" << std::endl;
         std::cout << "E)dit Movie" << std::endl;
@@ -423,9 +431,6 @@ void main()
 
                 default:
                 {
-                    //SetForegroundColor(ConsoleColor::BrightRed);
-                    //std::cout << "ERROR: Invalid option" << std::endl; 
-                    //ResetColors();
                     DisplayError("Invalid option");
                     break;
                 }
@@ -434,14 +439,43 @@ void main()
 
         switch (input)
         {
-            case MenuCommand::Add: movie = AddMovie();break;
+            case MenuCommand::Add:
+            {
+                // Get the movie details
+                // Find the first element not being used in the array
+                // Store new movie there, if any
+                Movie movie = AddMovie();
+
+                int index;
+                for (index = 0; index < maximumMovies; ++index)
+                {
+                    if (movies[index].title == "") // Find the first empty movie slot
+                    {
+                        movies[index] = movie;
+                        break;
+                    }
+                }
+
+                // TODO: Clean this up later
+                if (index == maximumMovies)
+                    DisplayError("No more space available");
+
+                break;
+            }
             case MenuCommand::Edit: DisplayWarning("Edit not implemented");
-            case MenuCommand::Delete: DeleteMovie(movie); break;
-            case MenuCommand::View: ViewMovie(movie); break;
+            case MenuCommand::Delete: DeleteMovie(movies[0]); break;
+            case MenuCommand::View:
+            {
+                for (Movie movie: movies)
+                {
+                    if (movie.title != "")
+                        ViewMovie(movie);
+                }
+                break;
+            }
 
             case MenuCommand::Quit: quit = true; break;
 
-            //Everything else
             default: DisplayError("Invalid option"); break;
         }
     }
@@ -568,5 +602,11 @@ Input parameter (Pass by value)     T)ype id        Param: Read & Write | Argume
 Output                              Ret type        Param: Write | 
 Input-Output (Pass by reference)    T)ype & id      Param: Read & write | Argument: changed (Must be a variable)
 
+Arrays: Multiple values stored as one
+Array_declaration: Type identifier[Expression(integer number)]
+The values in an array are called elements
+
+Size (array)
+ = Size(element) * Size (declaration)
 
 */
