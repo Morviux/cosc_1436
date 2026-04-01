@@ -470,6 +470,7 @@ void main()
                 {
                     if (movie.title != "")
                         ViewMovie(movie);
+
                 }
                 break;
             }
