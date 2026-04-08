@@ -86,6 +86,13 @@ void main()
         << std::setw(20) << "New Balance "
         << std::endl;
 
+    std::cout << std::setw(10) << "Month " 
+        << std::setw(13) << "Balance " 
+        << std::setw(13) << "Payment " 
+        << std::setw(13) << "Interest " 
+        << std::setw(20) << "New Balance " 
+        << std::endl;
+
     std::cout << std::setfill('-') << std::setw(65) << "" << std::setfill(' ') << std::endl;
 
     balance = loanAmount;
