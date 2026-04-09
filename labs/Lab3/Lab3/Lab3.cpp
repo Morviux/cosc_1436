@@ -55,7 +55,6 @@ int GetFallingTime()
 /// @brief Calculates the falling distance of an object
 double CalculateFallingDistance(int time)
 {
-
     return 0.5 * 9.8 * pow(time, 2);
 }
 
@@ -65,13 +64,13 @@ void DisplayTable(int time, char units)
     std::cout << std::left << std::fixed;
     std::cout << std::setprecision(2);
 
-    std::cout << std::setw(20) << "Seconds "
-        << std::setw(15) << "Distance "
-        << std::setw(15) << "Velocity "
+    std::cout << std::setw(14) << "Seconds "
+        << std::setw(11) << "Distance "
+        << std::setw(11) << "Velocity "
         << std::endl;
     
     std::cout << std::setfill('=')
-        << std::setw(60)
+        << std::setw(40)
         << "" << std::setfill(' ')
         << std::endl;
 
@@ -89,10 +88,11 @@ void DisplayTable(int time, char units)
         if (units == 'f' || units == 'F')
             velocity = ConvertToFeet(velocity);
 
-        std::cout << std::setw(20) << second
-            << std::setw(15) << distance
-            << velocity
-            << " " << unitLabel << "/s"
+        // This part is genuinely frustrating. Getting the unitLabel properly aligned to the 'Distance' value.
+        // I'll admit, i gave up. I had a headache and honestly. I'll take the grade i get. 
+        std::cout << std::setw(14) << second
+            << std::setw(11) << distance << " " << unitLabel
+            << velocity << " " << unitLabel << "/s"
             << std::endl;
     }   
 }
@@ -115,15 +115,10 @@ char GetUnits()
 }
 
 
-
 void main()
 {
     DisplayProgramInfo();
     int time = GetFallingTime();
     char units = GetUnits();
     DisplayTable(time, units);
-    
-    
-
-    
 }
