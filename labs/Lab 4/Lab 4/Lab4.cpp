@@ -47,7 +47,7 @@ char DisplayMenu()
 
 /// @brief Finds the largest integer in an array.
 /// @param values Array (pointer) to the integers to search; must refer to at least 'size' elements.
-/// @param size Number of elements in the array; should be > 0.
+/// @param size Number of elements within the array; should be > 0.
 /// @return The largest integer found in the array.
 int GetLargest(int values[], int size)
 {
@@ -58,6 +58,21 @@ int GetLargest(int values[], int size)
             largest = values[i];
     }
     return largest;
+}
+
+/// @brief Finds the smallest integer in an array
+/// @param values Array (pointer) to the integers to search; must refer to at least 'size' elements. 
+/// @param size Number of elements within the array; should be > 0
+/// @return The smallest integer found in the array
+int GetSmallest(int values[], int size)
+{
+    int smallest = values[0];
+    for (int i = 1; i < size; i++)
+    {
+        if (values[i] < smallest)
+            smallest = values[i];
+    }
+    return smallest;
 }
 
 /// @brief Function that prompts the user a single or multiple numerical inputs.
@@ -92,6 +107,18 @@ int GetNumbers(int values[], int size)
 
 }
 
+/// @brief Function to calculate the mean of the numbers provided. 
+/// @param values 
+/// @param size The number of values within the array
+/// @return The mean of the calculation. 
+double GetMean(int values[], int size)
+{
+    int sum = 0;
+    for (int i = 0; i < size; i++)
+        sum += values[i];
+
+    return static_cast<double>(sum) / size;
+}
 
 /// @brief Displays the program information 
 void DisplayProgramInfo()
@@ -101,7 +128,6 @@ void DisplayProgramInfo()
     std::cout << "COSC 1436 - Spring 2026" << std::endl;
     std::cout << std::endl;
 }
-
 
 
 void main()
@@ -115,17 +141,21 @@ void main()
     do
     {
         choice = DisplayMenu();
-    } while (choice != 'q' && choice != 'Q');
-
-    do
-    {
-        choice = DisplayMenu();
         
         switch (choice)
         {
-            case 'i': case 'L':
+            case 'l': case 'L':
                 std::cout << "Largest = " << GetLargest(numbers, count) << std::endl;
+                break;
+
+            case 's': case 'S':
+                std::cout << "Smallest = " << GetSmallest(numbers, count) << std::endl;
                 break; 
+
+            case 'm': case 'M':
+                std::cout << std::fixed << std::setprecision(4); 
+                std::cout << "Mean = " << GetMean(numbers, count) << std::endl;
+                break;
         }
     } while (choice != 'q' && choice != 'Q');
 
