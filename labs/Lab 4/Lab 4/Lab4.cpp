@@ -94,7 +94,7 @@ int GetNumbers(int values[], int size)
 
         if (input < 0)
         {
-            std::cout << "Please, enter a value that is greater than or equal to 0" << std::endl;
+            std::cout << "Please, enter a value that is greater than or equal to 0." << std::endl;
             std::cout << std::endl;
             continue;
         }
