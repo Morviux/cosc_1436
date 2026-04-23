@@ -16,7 +16,7 @@ char DisplayMenu()
     char choice;
     
     std::cout << "Main Menu" << std::endl;
-    std::cout << std::setfill('-')
+    std::cout << std::setfill('=')
         << std::setw(19)
         << "" << std::setfill(' ') 
         << std::endl;
@@ -42,6 +42,7 @@ char DisplayMenu()
         std::cin >> choice;
     }
 
+    std::cout << std::endl;
     return choice;
 }
 
@@ -57,7 +58,9 @@ int GetLargestValue(int values[], int size)
         if (values[i] > largest)
             largest = values[i];
     }
+
     return largest;
+    std::cout << std::endl;
 }
 
 /// @brief Locates the smallest integer within the array.
@@ -72,7 +75,9 @@ int GetSmallestValue(int values[], int size)
         if (values[i] < smallest)
             smallest = values[i];
     }
+    
     return smallest;
+    std::cout << std::endl;
 }
 
 /// @brief Prompts the user to enter numberical values greater than 0.
@@ -101,8 +106,10 @@ int GetNumbers(int values[], int size)
 
         values[count] = input;
         count++;
+        
     }
 
+    std::cout << std::endl;
     return count;
 
 }
@@ -118,6 +125,7 @@ double GetMean(int values[], int size)
         sum += values[i];
 
     return static_cast<double>(sum) / size;
+    std::cout << std::endl;
 }
 
 /// @brief Displays the program information 
@@ -164,7 +172,7 @@ void InsertValues(int values[], int size, int& count)
             std::cout << "Please, enter a value greater than or equal to 0." << std::endl;
             continue;
         }
-        
+       
         values[count] = input; 
         count++;
     }
