@@ -12,8 +12,10 @@ const int MaximumGenres = 5;
 struct Movie
 {
     //Fields
+    int id;
+
     std::string title;   // Required, not empty
-    
+
     std::string genres[MaximumGenres];
     int genreCount = 0;
 
@@ -37,27 +39,6 @@ enum class MenuCommand
     Quit = 5
 };
 
-// Function - a reusable block of code that does one logical operation
-
-// Function definition - Defines a function and its implemention
-//   func_decl ::= T id ( [parameter-list] )
-//   func_defn ::= func_decl { S* }
-//   parameter-list ::= parameter {, parameter}*
-//   parameter ::= T id
-// 
-//   func_call ::= id ( [arg-list] );
-//   arg-list  ::= E {, E}* 
-//                
-// - functions are actions and should be named as verbs
-// - casing: camel or Pascal 
-//
-// parameter ::= input to a function
-// parameter kinds
-//   1) Input (pass by value) (C++: T id)
-//          Copy of argument passed to function
-//          Function can read and write parameter
-//          Changes to parameter have no impact on original argument
-
 enum class ConsoleColor
 {
     Black = 30,
@@ -78,39 +59,29 @@ enum class ConsoleColor
     BrightWhite = 97,
 };
 
-//Prototypes / forward reference
-// Function declaration without the definition
 void DisplayError(std::string);
 void DisplayWarning(std::string);
 void ResetColors();
 void SetForegroundColor(ConsoleColor);
 
-/* Variables
-      Local - Declared inside a function and has a lifetime tied to the function call
-      Global - Declared outside a function and has a program lifetime
-               Used when multiple functions need access to data that is impractical to pass as parameters
-      Issues with globals (and why you will not use them, especially in this class)
-      1. Functions are no longer isolated
-      2. Initialization order is undefined
-      3. Anybody can read / write them
-*/
-
-
-const int g_maximumLineLength = 80; // Only allowed case for a constant
-
+const int g_maximumLineLength = 80; //Only allowed case for a constant
 
 /// @brief Displays a horizontal line.
 /// @param width Width of the line
 void DisplayLine(int width)
 {
+    //int maximumLineLength = -1;
+
     {
         double width = 24;
         int someValue = width * g_maximumLineLength;
     }
+
     if (width < 0)
         width = 0;
     else if (width > g_maximumLineLength)
         width = g_maximumLineLength;
+
     //int width = 10;
 
     //Logical operation
@@ -191,9 +162,15 @@ bool Confirm(std::string message)
         std::cin >> choice;
         if (choice == 'Y' || choice == 'y')
             return true;
+        /*{
+            confirm = true;
+            break;*/
         else if (choice == 'N' || choice == 'n')
             return false;
-        
+        /*{
+            confirm = false;
+            break;
+        };*/
     } while (true);
 
     //return false;
@@ -243,11 +220,6 @@ std::string ReadString(std::string message, bool required)
     } while (true);
 }
 
-/* Function Oveloading - Overloading a function's name by parameter types
- 1) Each overload must use the same name
- 2) Each overload must have one parameter type that is different
- 3) */
-
 /// @brief Reads an optional string
 /// @param message Message to display
 /// @return Input from user
@@ -256,13 +228,28 @@ std::string ReadString(std::string message)
     return ReadString(message, false);
 }
 
+/// @brief Find a movie given its ID
+/// @param movies 
+/// @param size 
+/// @param id 
+/// @return Index of movie, if found
+int FindMovieById(Movie movies[], int size, int id)
+{
+    for (int index = 0; index < size; ++index)
+        if (movies[index].id == id)
+            return index;
+
+    //Not found
+    return -1;
+}
+
 Movie AddMovie()
 {
     ClearInputBuffer();
 
     Movie movie;
 
-    //Title is required
+    //Title is required    
     movie.title = ReadString("Enter title (required): ", true);
     movie.description = ReadString("Enter description: ");
 
@@ -287,43 +274,81 @@ Movie AddMovie()
     return movie;
 }
 
+// Arrays as parameters are always open arrays (undefined size)
+// Array size always follows array parameter
+int AddMovie(Movie movies[], int size)
+{
+    //Get the movie details
+    Movie movie = AddMovie();
+
+    static int id = 1;
+
+    //Find an empty spot in the array
+    for (int index = 0; index < size; ++index)
+    {
+        if (movies[index].title == "") //Find first element that is not assigned
+        {
+            movie.id = id++;
+
+            movies[index] = movie;
+            return index;
+        }
+    }
+
+    return -1;
+}
+
 //TODO: Fix this correctly later
-// Movie is pass-by-reference
-// pass-by-reference (input-output) T& id
-// Function can modify argument provided by caller
-// Caller must pass a variable 
 void DeleteMovie(Movie& movie)
 {
     // No movie = no work
     if (movie.title == "")
         return;
+
+    //Delete    
     if (Confirm("Are you sure you want to delete '" + movie.title + "'"))
         movie.title = "";
 }
 
-// Pass by reference makes sense when: copying the value is too expensive, large, or not allowed
-// Make the parameter constant to avoid modification
+//Arrays are pass by value
+//Array behaves like pass by reference (parameter and argument point to the same array in memory)
+// Since the parameter is pass by value you cannot change what the argument refers to (the array)
+// Arrays can never be the return type of a function
+void DeleteMovies(Movie movies[], int size)
+{
+    //Determine movie to delete
+    int id = ReadInt("Enter ID of the movie to delete: ", 1);
+
+    //Find the movie
+    int index = FindMovieById(movies, size, id);
+    if (index < 0 || index >= size)
+    {
+        DisplayWarning("Movie not found");
+        return;
+    };
+
+    //Delete it
+    DeleteMovie(movies[index]);
+}
+
 void ViewMovie(Movie const& movie)
 {
     //Movie must exist
     if (movie.title == "")
-    {
-        DisplayWarning("No movies in library");
         return;
-    }
 
     //Display movie details
+    std::cout << "[" << movie.id << "] ";
     std::cout << movie.title << " (" << movie.releaseYear << ")" << std::endl;
     std::cout << "Length (in minutes) " << movie.runLength << std::endl;
-    // std::cout << "Genre(s): " << movie.genres << std::endl;
+    //std::cout << "Genre(s): " << movie.genres << std::endl;
     std::cout << "Genres: ";
     for (int index = 0; index < movie.genreCount; ++index)
     {
         if (index > 0)
             std::cout << ", ";
 
-            std::cout << movie.genres[index] << " ";    
-            
+        std::cout << movie.genres[index];
     }
     std::cout << std::endl;
 
@@ -333,48 +358,58 @@ void ViewMovie(Movie const& movie)
     std::cout << movie.description << std::endl;
 }
 
+void ViewMovies(Movie movies[], int size)
+{
+    //For range statement does not work with array parameters
+    //for (Movie movie: movies)
+    for (int index = 0; index < size; ++index)
+    {
+        if (movies[index].title != "")
+            ViewMovie(movies[index]);
+    }
+}
+
 void ArrayDemo()
 {
-    const int maximumValues = 10;
-    int values[maximumValues];
+    const int MaximumValues = 10;
+    int values[MaximumValues];
 
-    // Accessign array elements
-    //      Array_element ::= array[index]
-    //      index ::= Ei
-    // You can read and write the element values 
+    // Accessing array elements
+    //    array_element ::= arr[index]
+    //    index ::= Ei
+    // You can read and write element values
 
-    // The value inside of the square brackets is called the 'Index' (Heh. Index, like the index in warframe)
+    // Index is specified inside brackets (integral)
     // Index is always zero-based
-    //      Index 0 = Element 1
-    //      Index 1 = Element 2
-    //      Index 2 = Element 3
-    //      Index N = Element N+1
+    //    Index 0 = Element 1 
+    //    Index 1 = Element 2
+    //    Index N = Element N+1
     // Given an array of size M
-    //   There are M elements ranging from 1-M
-    //   Index is 0 to M - 1
+    //    There are M elements (1-M)
+    //    Index is 0 to M - 1
     int thirdElement = values[2];
 
     values[0] = 10;
-    values[1] = 20; 
+    values[1] = 20;
     values[2] = 30;
 
-    // Iterate the elements in an array (0.. < size)
-    // There is no way at run-time to correctly determine number of elements in the array
-    for (int index = 0; index < maximumValues; ++index)
-    // int index = 0;
-    // for (int& value: values)
+    //Iterate the elements in an array (0..<size)
+    // There is no way at runtime to correctly determine # of elements in the array
+    for (int index = 0; index < MaximumValues; ++index)
+    //int index = 0;
+    //for (int& value: values)
     {
         values[index] = index * 10;
-        // value = index++ * 10;
+        //value = index++ * 10;
     }
 
-    // For-range statement | ::= for (Type Id : ArrayName)
+    // for-range statement ::= for (T id : arr)
     // Only works if the array is declared within the same function
-    // for (int index = 0; index < maximumValues; ++index)
+    //for (int index = 0; index < MaximumValues; ++index)
     for (int value: values)
     {
-        // int value = values[index];
-        // std::cout << values[index] << " ";
+        //int value = values[index];
+        //std::cout << values[index] << " ";
         std::cout << value << " ";
         value = 0;
     }
@@ -382,41 +417,41 @@ void ArrayDemo()
 
 void ArrayInitDemo()
 {
-    // Zero array initialization - initialize all elements in the array ({0})
-    // int daysInMonth[12] = {0};
+    // Zero array initialization - initialize all elements in the array
+    //int daysInMonth[12] = {0};
 
     // Full array initialization sets all elements in the array
     int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     //Init each element to specific value
-    /* daysInMonth[0] = daysInMonth[2] = daysInMonth[4] = daysInMonth[6] = daysInMonth[7] =
+    /*daysInMonth[0] = daysInMonth[2] = daysInMonth[4] = daysInMonth[6] = daysInMonth[7] =
         daysInMonth[9] = daysInMonth[11] = 31;
     daysInMonth[3] = daysInMonth[5] = daysInMonth[8] = daysInMonth[10] = 30;
-    daysInMonth[1] = 28; */
+    daysInMonth[1] = 28;    */
 
-    // Implicit array sizing - when using an array initilizatizer, the size of the array is optional
-    // Use cases: 
-    //  1. Size of the array will never change in my life
-    //  2. For strings
+    //Implicit array sizing - when using an array initializater, size of array is optional
+    //  Use cases:
+    //    1. Size of array will never change for your life
+    //    2. string
     std::string monthNames[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    /*monthNames[0] = "Jan";
-    monthNames[1] = "Feb";
-    monthNames[2] = "Mar";
-    monthNames[3] = "Apr";
-    monthNames[4] = "May";
-    monthNames[5] = "Jun";
-    monthNames[6] = "Jul";
-    monthNames[7] = "Aug";
-    monthNames[8] = "Sep";
-    monthNames[9] = "Oct";
-    monthNames[10] = "Nov";
-    monthNames[11] = "Dec";*/
+    //monthNames[0] = "Jan";
+    //monthNames[1] = "Feb";
+    //monthNames[2] = "Mar";
+    //monthNames[3] = "Apr";
+    //monthNames[4] = "May";
+    //monthNames[5] = "Jun";
+    //monthNames[6] = "Jul";
+    //monthNames[7] = "Aug";
+    //monthNames[8] = "Sep";
+    //monthNames[9] = "Oct";
+    //monthNames[10] = "Nov";
+    //monthNames[11] = "Dec";
 
     for (int index = 0; index < 12; ++index)
         std::cout << monthNames[index] << " has " << daysInMonth[index] << " days" << std::endl;
 
-    // Partial array initialization - only some element values are set, the rest are zero-initialized.
-    char name[100] = {'B', 'o', 'b'}; // "Bob"
+    //Partial array initialization - only some element values are set, the rest are zero initialized
+    char name[100] = {'B', 'o', 'b'}; //"Bob"
     char companyName[] = "My Company";
 
     double rates[5] = {1.2, 3.4, 5.6, 7.8, 9.0};
@@ -425,8 +460,8 @@ void ArrayInitDemo()
     int numbers[10];
     double r = 5.6;
 
-    // Off by one 
-    //  Starting at 1 and therefore skipping the first element
+    // Off by one
+    //  Starting at 1 and therefore skipping first element
     //  Indexing to size which is one after the last element
     //Init the array
     for (int index = 0; index < 10; ++index)
@@ -437,38 +472,125 @@ void ArrayInitDemo()
     std::cout << std::endl;
 }
 
+void CopyArray(int target[], int targetSize, int source[], int sourceSize)
+{
+    int size = (sourceSize <= targetSize) ? sourceSize : targetSize;
+
+    for (int index = 0; index < size; ++index)
+        target[index] = source[index];
+}
+
+bool CompareArray(int left[], int leftSize, int right[], int rightSize)
+{
+    if (leftSize != rightSize)
+        return false;
+
+    for (int index = 0; index < leftSize; ++index)
+        if (left[index] != right[index])
+            return false;
+
+    return true;
+}
+
+void DisplayArray(int values[], int size, int elementsPerLine, std::string delimeter)
+{
+    for (int index = 0; index < size; ++index)
+    {
+        // Divides index by elements, when evenly divisible. Then it prints a new line
+        if (index % elementsPerLine == 0 && index != 0)
+            std::cout << std::endl;
+
+        std::cout << values[index] << delimeter;
+    }
+
+    std::cout << std::endl;
+}
+
+void ArrayUsageDemo()
+{
+    //Things you can't do with array variables
+    int array1[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int array2[10] = {2,4, 6, 8, 9, 10, 12, 14, 16, 18};
+
+    //Copy them
+    //array2 = array1;
+    CopyArray(array2, 10, array1, 5);
+
+    //Compare them
+    //bool areEqual = array1 == array2;
+    bool areEqual = CompareArray(array1, 10, array2, 10);
+
+    //Display them
+    // std::cout << array1 << std::endl;
+    DisplayArray(array1, 10, 5, " ");
+    
+}
+
+void DisplayTable(int table[][12], int size)
+{
+    for (int row = 0; row < size; ++row)
+        DisplayArray(table[row], 12, 12, " ");
+        //for (int col = 0; col < 12; ++col)
+            //std::cout << table[row][col] << " ";
+
+    std::cout << std::endl;
+}
+
+void MultiDimensionalArrayDemo()
+{
+    // 10 x 12 table of values
+    const int MaxRows = 10;
+    const int MaxCols = 12;
+    int multiplication[MaxRows][MaxCols] = {
+        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 },
+        { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24 },
+        { 3, 6, 9, 12 },
+        { 4, 8, 12, 16 }
+    }; // table with 10 rows, 12 columns
+
+    // Row major (C++) - Stores the entire row of a table first
+    // Column major - Stores the entire column of a table first
+    for (int row = 0; row < MaxRows; ++row)
+        for (int col = 0; col < MaxCols; ++col)
+            multiplication[row][col] = (row + 1) * (col + 1);
+
+    DisplayTable(multiplication, MaxRows);
+}
+        
 void main()
 {
-    ArrayInitDemo();
+    //ArrayDemo();
+    //ArrayInitDemo();
 
-    // TODO: Remove once no longer used
-    // Movie movie;
-    // Movie movie2, movie3, movie4; // Support more than one movie
-    const int maximumMovies = 100;
-    Movie movies[maximumMovies];        // Stores five movies
+    //TODO: Remove once no longer used
+    //Movie movie;
+    //Movie movie2, movie3, movie4; //Support more than 1 movie
+    const int MaximumMovies = 100;
+    Movie movies[MaximumMovies];         // Stores 100 movies
 
-    // Array Declarations Type Identifier Name [Expression (Integer)];
-    //  All elements have the same type
+    //Array declarations  T id [ Eci ];
+    //  Elements are the values stored in an array
+    //  Names are plural
+    //  All elements have same type
     //  DO NOT USE to store unrelated values just to save variables
     //  Value inside the brackets is the size, number of elements, in the array
     //  Size must be:
-    // 1. a compile-time constant
-    // 2. > than 0
-    // 3. Must be an integer
-    
-    // IMPORTANT:
-    // Array is NOT part of the type
-    // Other names for arrays: Collection, vector, list, set, array
+    //  1. a compile time constant 
+    //  2. > than 0
+    //  3. Integer
+    //  Array is NOT part of the type
+    // Other names for arrays: collection, vector, set, list, array
 
-    // All arrays store their elements continuously in memory
+    // All arrays store their elements contiguously in memory
     // Local variables are stored on stack so be careful of stack space
-       
+
     bool quit = false;
     while (!quit)
     {
         // Display menu
         std::cout << "Main Menu" << std::endl;
         DisplayLine(10);
+
         std::cout << "A)dd Movie" << std::endl;
         std::cout << "E)dit Movie" << std::endl;
         std::cout << "D)elete Movie" << std::endl;
@@ -512,42 +634,19 @@ void main()
         {
             case MenuCommand::Add:
             {
-                // Get the movie details
-                // Find the first element not being used in the array
-                // Store new movie there, if any
-                Movie movie = AddMovie();
-
-                int index;
-                for (index = 0; index < maximumMovies; ++index)
-                {
-                    if (movies[index].title == "") // Find the first empty movie slot
-                    {
-                        movies[index] = movie;
-                        break;
-                    }
-                }
-
-                // TODO: Clean this up later
-                if (index == maximumMovies)
+                int index = AddMovie(movies, MaximumMovies);
+                if (index < 0)
                     DisplayError("No more space available");
 
                 break;
             }
             case MenuCommand::Edit: DisplayWarning("Edit not implemented");
-            case MenuCommand::Delete: DeleteMovie(movies[0]); break;
-            case MenuCommand::View:
-            {
-                for (Movie movie: movies)
-                {
-                    if (movie.title != "")
-                        ViewMovie(movie);
-
-                }
-                break;
-            }
+            case MenuCommand::Delete: DeleteMovies(movies, MaximumMovies); break;
+            case MenuCommand::View: ViewMovies(movies, MaximumMovies); break;
 
             case MenuCommand::Quit: quit = true; break;
 
+            //Everything else
             default: DisplayError("Invalid option"); break;
         }
     }
