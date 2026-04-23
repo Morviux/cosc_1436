@@ -10,7 +10,7 @@ COSC 1436 - Spring 2026
 #include <iomanip>
 
 /// @brief A menu table for the user to see / utilize.
-/// @return The user's menu selection
+/// @return The user's menu selection.
 char DisplayMenu()
 {
     char choice;
@@ -45,11 +45,11 @@ char DisplayMenu()
     return choice;
 }
 
-/// @brief Finds the largest integer in an array.
+/// @brief Locates the largest integer within the array. 
 /// @param values Array (pointer) to the integers to search; must refer to at least 'size' elements.
 /// @param size Number of elements within the array; should be > 0.
 /// @return The largest integer found in the array.
-int GetLargest(int values[], int size)
+int GetLargestValue(int values[], int size)
 {
     int largest = values[0];
     for (int i = 1; i < size; i++)
@@ -60,11 +60,11 @@ int GetLargest(int values[], int size)
     return largest;
 }
 
-/// @brief Finds the smallest integer in an array
+/// @brief Locates the smallest integer within the array.
 /// @param values Array (pointer) to the integers to search; must refer to at least 'size' elements. 
-/// @param size Number of elements within the array; should be > 0
-/// @return The smallest integer found in the array
-int GetSmallest(int values[], int size)
+/// @param size Number of elements within the array; should be > 0.
+/// @return The smallest integer found in the array.
+int GetSmallestValue(int values[], int size)
 {
     int smallest = values[0];
     for (int i = 1; i < size; i++)
@@ -75,7 +75,7 @@ int GetSmallest(int values[], int size)
     return smallest;
 }
 
-/// @brief Function that prompts the user a single or multiple numerical inputs.
+/// @brief Prompts the user to enter numberical values greater than 0.
 /// @param values Numerical values that are not negative numbers or < 0.
 /// @param size The maximum number of values the array can hold.
 /// @return The number of values entered by the user.
@@ -107,10 +107,10 @@ int GetNumbers(int values[], int size)
 
 }
 
-/// @brief Function to calculate the mean of the numbers provided. 
-/// @param values 
-/// @param size The number of values within the array
-/// @return The mean of the calculation. 
+/// @brief Calculates the mean of the elements within the array.
+/// @param values Array of integers to calculate the mean from.
+/// @param size The number of values within the array.
+/// @return The mean of the calculation in a double.
 double GetMean(int values[], int size)
 {
     int sum = 0;
@@ -129,6 +129,46 @@ void DisplayProgramInfo()
     std::cout << std::endl;
 }
 
+/// @brief Displays the values stored in the array.
+/// @param values Array of integers to display.
+/// @param size The number of elements in the array.
+void DisplayValues(int values[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        std::cout << values[i] << "\t";
+        
+        if ((i + 1) % 10 == 0)
+            std::cout << std::endl;
+    }
+    std::cout << std::endl;
+}
+
+/// @brief Prompts the user to insert / add a new value into the array.
+/// @param values Array of integers in the array
+/// @param size The maximum amount the array can hold. 
+/// @param count The current amount of elements the user inserted.
+void InsertValues(int values[], int size, int& count)
+{
+    while (count < size)
+    {
+        int input; 
+        std::cout << "Enter a value (or 0 to stop): ";
+        std::cin >> input;
+
+        if (input == 0)
+            break;
+
+        if (input < 0)
+        {
+            std::cout << "Please, enter a value greater than or equal to 0." << std::endl;
+            continue;
+        }
+        
+        values[count] = input; 
+        count++;
+    }
+}
 
 void main()
 {
@@ -145,18 +185,32 @@ void main()
         switch (choice)
         {
             case 'l': case 'L':
-                std::cout << "Largest = " << GetLargest(numbers, count) << std::endl;
+                std::cout << "Largest = " << GetLargestValue(numbers, count) << std::endl;
                 break;
 
             case 's': case 'S':
-                std::cout << "Smallest = " << GetSmallest(numbers, count) << std::endl;
+                std::cout << "Smallest = " << GetSmallestValue(numbers, count) << std::endl;
                 break; 
 
             case 'm': case 'M':
                 std::cout << std::fixed << std::setprecision(4); 
                 std::cout << "Mean = " << GetMean(numbers, count) << std::endl;
                 break;
+
+            case 'v': case 'V':
+                DisplayValues(numbers, count); 
+                break;
+                
+            case 'i': case 'I':
+            case 'a': case 'A':
+                InsertValues(numbers, 100, count);
+                break;
         }
     } while (choice != 'q' && choice != 'Q');
 
 }
+
+/*This was actually easier to do than lab 3. 
+I understood arrays better than the previous unit, plus, the table was very, VERY easy to make.
+Considering that i HEAVILY referenced the Movielibrary.cpp file to make the menu table, of course.
+*/
