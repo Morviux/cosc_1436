@@ -229,29 +229,36 @@ std::string ReadString(std::string message)
 }
 
 /// @brief Find a movie given its ID
-/// @param movies 
-/// @param size 
-/// @param id 
+/// @param movies Array to search
+/// @param size Size of the array
+/// @param id ID to search for
 /// @return Index of movie, if found
-int FindMovieById(Movie movies[], int size, int id)
+int FindMovieById(Movie* movies[], int size, int id)
 {
     for (int index = 0; index < size; ++index)
-        if (movies[index].id == id)
+        if (movies[index] && movies[index]->id == id)
             return index;
 
     //Not found
     return -1;
 }
 
-Movie AddMovie()
+//Returning pointers from functions is allowed 
+// Use cases (cases when memory is still valid after func call returns)
+//   1. Dynamically allocated memory
+//   2. Returning address of element of array passed as a parameter
+//   3. Address of a global variable
+// Not use case
+//  1. Returning address of local variable or parameter
+Movie* AddMovie()
 {
     ClearInputBuffer();
 
-    Movie movie;
+    Movie* ptrMovie = new Movie;
 
     //Title is required    
-    movie.title = ReadString("Enter title (required): ", true);
-    movie.description = ReadString("Enter description: ");
+    ptrMovie->title = ReadString("Enter title (required): ", true);
+    ptrMovie->description = ReadString("Enter description: ");
 
     for (int count = 0; count < MaximumGenres; ++count)
     {
@@ -259,38 +266,44 @@ Movie AddMovie()
         if (genre == "")
             break;
 
-        movie.genres[count] = genre;
-        ++movie.genreCount;
+        ptrMovie->genres[count] = genre;
+        ++ptrMovie->genreCount;
     }
 
-    movie.runLength = ReadInt("Enter run length (in minutes): ", 0);
-    movie.releaseYear = ReadInt("Enter release year (1900-2100): ", 1900, 2100);
+    ptrMovie->runLength = ReadInt("Enter run length (in minutes): ", 0);
+    ptrMovie->releaseYear = ReadInt("Enter release year (1900-2100): ", 1900, 2100);
 
     std::cout << "Enter the user rating (1.0-5.0): ";
-    std::cin >> movie.userRating;
+    std::cin >> ptrMovie->userRating;
 
-    movie.isClassic = Confirm("Is classic?");
+    ptrMovie->isClassic = Confirm("Is classic?");
 
-    return movie;
+    return ptrMovie;
 }
 
-// Arrays as parameters are always open arrays (undefined size)
-// Array size always follows array parameter
-int AddMovie(Movie movies[], int size)
+/// @brief Adds a movie to the list
+/// @param movies Movie list
+/// @param size Size of list
+/// @return Index of added movie
+int AddMovie(Movie* movies[], int size)
 {
     //Get the movie details
-    Movie movie = AddMovie();
+    Movie* ptrMovie = AddMovie();
+    if (!ptrMovie)
+        return -1;
 
     static int id = 1;
 
     //Find an empty spot in the array
     for (int index = 0; index < size; ++index)
     {
-        if (movies[index].title == "") //Find first element that is not assigned
+        //if (movies[index].title == "") //Find first element that is not assigned
+        if (!movies[index])
         {
-            movie.id = id++;
+            //movie.id = id++;
+            ptrMovie->id = id++;
 
-            movies[index] = movie;
+            movies[index] = ptrMovie;
             return index;
         }
     }
@@ -299,22 +312,21 @@ int AddMovie(Movie movies[], int size)
 }
 
 //TODO: Fix this correctly later
-void DeleteMovie(Movie& movie)
+void DeleteMovie(Movie* movie)
 {
     // No movie = no work
-    if (movie.title == "")
+    if (!movie)
         return;
 
     //Delete    
-    if (Confirm("Are you sure you want to delete '" + movie.title + "'"))
-        movie.title = "";
+    if (Confirm("Are you sure you want to delete '" + movie->title + "'"))
+        delete movie;
 }
 
-//Arrays are pass by value
-//Array behaves like pass by reference (parameter and argument point to the same array in memory)
-// Since the parameter is pass by value you cannot change what the argument refers to (the array)
-// Arrays can never be the return type of a function
-void DeleteMovies(Movie movies[], int size)
+/// @brief Delete a movie
+/// @param movies Movie list
+/// @param size Size of list
+void DeleteMovies(Movie* movies[], int size)
 {
     //Determine movie to delete
     int id = ReadInt("Enter ID of the movie to delete: ", 1);
@@ -329,260 +341,299 @@ void DeleteMovies(Movie movies[], int size)
 
     //Delete it
     DeleteMovie(movies[index]);
+    movies[index] = nullptr;
 }
 
-void ViewMovie(Movie const& movie)
+/// @brief View movie details
+/// @param movie Movie to view
+void ViewMovie(Movie* ptrMovie)   //ViewMovie (Movie movie) //Pass by value
 {
+    //Movie tempMovie;
+    //ptrMovie = &tempMovie;   // Local variable, not the argument
+
     //Movie must exist
-    if (movie.title == "")
+    //(*ptrMovie).title
+    if (ptrMovie->title == "")
         return;
 
     //Display movie details
-    std::cout << "[" << movie.id << "] ";
-    std::cout << movie.title << " (" << movie.releaseYear << ")" << std::endl;
-    std::cout << "Length (in minutes) " << movie.runLength << std::endl;
-    //std::cout << "Genre(s): " << movie.genres << std::endl;
+    std::cout << "[" << ptrMovie->id << "] ";
+    std::cout << ptrMovie->title << " (" << ptrMovie->releaseYear << ")" << std::endl;
+    std::cout << "Length (in minutes) " << ptrMovie->runLength << std::endl;
     std::cout << "Genres: ";
-    for (int index = 0; index < movie.genreCount; ++index)
+    for (int index = 0; index < ptrMovie->genreCount; ++index)
     {
         if (index > 0)
             std::cout << ", ";
 
-        std::cout << movie.genres[index];
+        std::cout << ptrMovie->genres[index];
     }
     std::cout << std::endl;
 
-    std::cout << "User Rating: " << movie.userRating << std::endl;
-    std::cout << "Classic? " << (movie.isClassic ? "Yes" : "No") << std::endl;
+    std::cout << "User Rating: " << ptrMovie->userRating << std::endl;
+    std::cout << "Classic? " << (ptrMovie->isClassic ? "Yes" : "No") << std::endl;
 
-    std::cout << movie.description << std::endl;
+    std::cout << ptrMovie->description << std::endl;
 }
 
-void ViewMovies(Movie movies[], int size)
+void ViewMovies(Movie* movies[], int size)
 {
     //For range statement does not work with array parameters
     //for (Movie movie: movies)
     for (int index = 0; index < size; ++index)
     {
-        if (movies[index].title != "")
+        //if (movies[index].title != "")
+        if (movies[index])   //Checking for valid pointer
             ViewMovie(movies[index]);
     }
 }
 
-void ArrayDemo()
+void PointerDemo()
 {
-    const int MaximumValues = 10;
-    int values[MaximumValues];
+    // Pointer = Memory address (hopefully in the heap)
+    int someValue = 100;  //Local variable, stored on call stack, 4 bytes in size
+    int* ptrValue;        //Local variable, stored on call stack, 4 or 8 bytes in size
+                          //Stores a memory address
 
-    // Accessing array elements
-    //    array_element ::= arr[index]
-    //    index ::= Ei
-    // You can read and write element values
+    // addressof_op ::= &E
+    //    Returns a pointer to the variable
+    //    Type is typeof(E)
+    ptrValue = &someValue; //Capture memory address of local variable
+    std::cout << "Pointer value = " << ptrValue << " "
+        << "Dereferenced value = " << *ptrValue << " "
+        << "Some Value address = " << &someValue << " "
+        << "Some Value value = " << someValue << " "
+        << std::endl;
 
-    // Index is specified inside brackets (integral)
-    // Index is always zero-based
-    //    Index 0 = Element 1 
-    //    Index 1 = Element 2
-    //    Index N = Element N+1
-    // Given an array of size M
-    //    There are M elements (1-M)
-    //    Index is 0 to M - 1
-    int thirdElement = values[2];
+//T* T = int *ptrValue = int
+    *ptrValue = 200;
 
-    values[0] = 10;
-    values[1] = 20;
-    values[2] = 30;
+    //Initialize your pointers
+    double* ptrRate = nullptr; // Preferred, always use this
+    //*ptrRate = NULL; // Old C/C++ code, not recommended or used        
+    ptrRate = NULL;
+    //*ptrRate = nullptr;
 
-    //Iterate the elements in an array (0..<size)
-    // There is no way at runtime to correctly determine # of elements in the array
-    for (int index = 0; index < MaximumValues; ++index)
-    //int index = 0;
-    //for (int& value: values)
+    // Type compatibility rules
+    float* pFloat = nullptr;
+    int testInt = 10;
+    double testDouble = 4.5;
+    float testFloat = 8.7;
+
+    pFloat = &testFloat;   //float* = float*
+    *pFloat = testInt;     //float = int  (type coercion) 
+
+    // Pointers are same size but derefered values are not => ERROR    // 
+    //pFloat = &testDouble;  //float* = double*
+    //pFloat = &testInt;      //float* = int*  => ERROR    
+    // COMPILER requires that pointers exactly match (no type coercion)
+
+    // Validating pointers
+    //  1. Is not null (zero)
+    // X 2. Points to garbage (uninitialized)  0xCC, only in debugger
+    // X 3. Memory we don't own (if you deref to RW, immediately crash) 
+
+    // Testing for not-null
+    //  1. Long way, relational (only equality and inequality make sense)
+    if (pFloat != nullptr)    // if (boolValue == true)
+        *pFloat = 10;
+    //  2. C-way, don't use this
+    if (pFloat != NULL)
+        *pFloat = 10;
+    //  3. Short way, how most C++ programmers do it
+    if (pFloat)                // if (boolValue)
+        *pFloat = 10;
+
+    // Testing for null
+    if (pFloat == nullptr)
+        std::cout << "Is null" << std::endl;
+    if (!pFloat)
+        std::cout << "Is null" << std::endl;
+
+    //Pointers can point to array elements
+    double taxRates[5] = {1.2, 3.4, 5.6, 7.8, 9.0};
+    double* pTaxRate = nullptr;
+    pTaxRate = &taxRates[1];
+
+    Movie movie;
+    Movie* pMovie = &movie;
+
+    //Accessing a member
+    movie.title = "Jaws";       // Member access dot
+    (*pMovie).title = "Jaws 2"; // Member access the long way
+    pMovie->title = "Jaws 3";   // Member access for pointers ->
+
+    // Naming pointers
+    //   prefix with 'ptr' or 'p'
+
+    //Dereferencing a pointer gives u access to the value stored at that pointer
+    // dereference_op ::= * E
+    // *ptrValue
+
+    // Type of a pointer is ALWAYS a memory address, int (32- or 64-bit)
+    // Derefencing a pointer, the type is the type it points to
+    //    T* means pointer to T means the dereferenced value is type T
+    //    *(int*) => int
+    //    * (double*) => double
+}
+
+void DynamicMemoryDemo()
+{
+    /*while (true)
     {
-        values[index] = index * 10;
-        //value = index++ * 10;
+        Movie* pMovie = new Movie;
+        delete pMovie;
+    }*/
+
+    //Pointers to existing data (local variables)
+    //double taxRate = 4.5;
+    //double* pTaxRate = nullptr;
+
+    //do
+    //{
+    //    //Prompt user for a tax rate
+    //    std::cout << "Tax rate? ";
+    //    std::cin >> taxRate;
+    //    if (taxRate <= 0)
+    //        break;
+
+    //    // new_op ::= new T  => returns T*
+    //    //  Dynamically allocates memory for a given type
+    //    pTaxRate = new double;
+    //    *pTaxRate = taxRate;
+    //} while (true);
+
+    //std::cout << "Tax rate is " << *pTaxRate << std::endl;
+    Movie* pMovie = nullptr;
+    while (Confirm("Do you want to add a movie? "))
+    {
+        //Movie movie = AddMovie();
+        pMovie = AddMovie();
+
+        //Before allocating new pointer ensure old pointer is cleaned up
+        //if (pMovie)
+            //delete pMovie;
+
+        //pMovie = new Movie;
+        //pMovie->id = movie.id;
+        //pMovie->title = movie.title;
+        //pMovie->description = movie.description;
+        //pMovie->runLength = movie.runLength;
+        //pMovie->releaseYear = movie.releaseYear;
+        ////pMovie->genres = movie.genres;
+        //pMovie->genreCount = movie.genreCount;
+        //pMovie->isClassic = movie.isClassic;
     }
 
-    // for-range statement ::= for (T id : arr)
-    // Only works if the array is declared within the same function
-    //for (int index = 0; index < MaximumValues; ++index)
-    for (int value: values)
+    if (pMovie)
     {
-        //int value = values[index];
-        //std::cout << values[index] << " ";
-        std::cout << value << " ";
-        value = 0;
+        ViewMovie(pMovie);
+        delete pMovie;
+        pMovie = nullptr;  //Reset pointer
+
+        delete pMovie;  //Calling delete on a bad or already freed pointer is undefined
+                        //Calling delete on nullptr is harmless
     }
 }
 
-void ArrayInitDemo()
+// Steps to convert from pass by ref (variable/parameter) to pointer
+// 1. Change the parameter to a pointer
+// 2. Every reference to parameter changes to deref
+// 3. Validate the pointer
+// 4. (Caller) Change argument to pointer
+void CPointerVsReferenceDemo(Movie* movie)  //pass by value
 {
-    // Zero array initialization - initialize all elements in the array
-    //int daysInMonth[12] = {0};
+    if (!movie)
+        return;
 
-    // Full array initialization sets all elements in the array
-    int daysInMonth[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    //(*movie).title = ;
+    movie->title = "New " + movie->title;
+}
 
-    //Init each element to specific value
-    /*daysInMonth[0] = daysInMonth[2] = daysInMonth[4] = daysInMonth[6] = daysInMonth[7] =
-        daysInMonth[9] = daysInMonth[11] = 31;
-    daysInMonth[3] = daysInMonth[5] = daysInMonth[8] = daysInMonth[10] = 30;
-    daysInMonth[1] = 28;    */
+void PointerVsReferenceDemo(Movie& movie) //pass by ref
+{
+    //No need to check for null
+    movie.title = "New " + movie.title;
+}
 
-    //Implicit array sizing - when using an array initializater, size of array is optional
-    //  Use cases:
-    //    1. Size of array will never change for your life
-    //    2. string
-    std::string monthNames[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    //monthNames[0] = "Jan";
-    //monthNames[1] = "Feb";
-    //monthNames[2] = "Mar";
-    //monthNames[3] = "Apr";
-    //monthNames[4] = "May";
-    //monthNames[5] = "Jun";
-    //monthNames[6] = "Jul";
-    //monthNames[7] = "Aug";
-    //monthNames[8] = "Sep";
-    //monthNames[9] = "Oct";
-    //monthNames[10] = "Nov";
-    //monthNames[11] = "Dec";
+void PointerToReferenceCaller()
+{
+    Movie movie;
 
-    for (int index = 0; index < 12; ++index)
-        std::cout << monthNames[index] << " has " << daysInMonth[index] << " days" << std::endl;
+    Movie& refMovie = movie;
 
-    //Partial array initialization - only some element values are set, the rest are zero initialized
-    char name[100] = {'B', 'o', 'b'}; //"Bob"
-    char companyName[] = "My Company";
+    //PointerVsReferenceDemo(movie);  //(&movie)
+    CPointerVsReferenceDemo(&movie);  //(&movie)
+}
 
-    double rates[5] = {1.2, 3.4, 5.6, 7.8, 9.0};
+void PointerArithmeticDemo()
+{
+    int intValue = 20;
+    int* pInt = &intValue;
 
-    int x = 100;
-    int numbers[10];
-    double r = 5.6;
+    intValue = intValue + 1;
 
-    // Off by one
-    //  Starting at 1 and therefore skipping first element
-    //  Indexing to size which is one after the last element
-    //Init the array
+    // Pointer arithmetic adds/substracts 1 element size, not 1 byte
+    // ptr * N => pir + (N *sizeof(T))
+    int* pNewInt = pInt + 1;
+    std::cout << "Old ptr " << pInt << " Old value " << *pInt << std::endl
+              << "New ptr " << pNewInt << " New Value" << *pNewInt;
+
+    // Arrays & Pointers are interchangable; the exact same thing
+    int values[10] = {0};
+    pInt = values;
+
+    // Array init
+    std::cout << std::endl;
     for (int index = 0; index < 10; ++index)
-        numbers[index] = index + 1;
-
+        values[index] = index + 1;
     for (int index = 0; index < 10; ++index)
-        std::cout << numbers[index] << " ";
+        std::cout << values[index] << " ";
+    std::cout << std::endl;
+
+    // Can use arrays or pointers with array syntax
+    pInt = values; 
+    for (int index = 0; index < 10; ++index)
+        pInt[index] = index + 2;
+    for (int index = 0; index < 10; ++index)
+        std::cout << values[index] << " ";
+    std::cout << std::endl;
+
+    // Can use arrays or pointers with pointer syntax
+    pInt = values;
+    for (int index = 0; index < 10; ++index)
+        *(pInt + index) = index + 3;
+    for (int index = 0; index < 10; ++index)
+        std::cout << values[index] << " ";
     std::cout << std::endl;
 }
 
-void CopyArray(int target[], int targetSize, int source[], int sourceSize)
+void DynamicallyAllocateArray()
 {
-    int size = (sourceSize <= targetSize) ? sourceSize : targetSize;
+    int size; 
+    std::cout << "How many elements do you want? ";
+    std::cin >> size; 
 
+    // Dyncamically allocating an array at runtime
+    // Size is not fixed 
+    // 
+    double* pValues = new double[size];
     for (int index = 0; index < size; ++index)
-        target[index] = source[index];
+        pValues[index] = 0;
+
+    // To cleanup an array allocated with new, you must use delete array
+    // delete pValues; 
+    delete[] pValues;
 }
 
-bool CompareArray(int left[], int leftSize, int right[], int rightSize)
-{
-    if (leftSize != rightSize)
-        return false;
-
-    for (int index = 0; index < leftSize; ++index)
-        if (left[index] != right[index])
-            return false;
-
-    return true;
-}
-
-void DisplayArray(int values[], int size, int elementsPerLine, std::string delimeter)
-{
-    for (int index = 0; index < size; ++index)
-    {
-        // Divides index by elements, when evenly divisible. Then it prints a new line
-        if (index % elementsPerLine == 0 && index != 0)
-            std::cout << std::endl;
-
-        std::cout << values[index] << delimeter;
-    }
-
-    std::cout << std::endl;
-}
-
-void ArrayUsageDemo()
-{
-    //Things you can't do with array variables
-    int array1[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    int array2[10] = {2,4, 6, 8, 9, 10, 12, 14, 16, 18};
-
-    //Copy them
-    //array2 = array1;
-    CopyArray(array2, 10, array1, 5);
-
-    //Compare them
-    //bool areEqual = array1 == array2;
-    bool areEqual = CompareArray(array1, 10, array2, 10);
-
-    //Display them
-    // std::cout << array1 << std::endl;
-    DisplayArray(array1, 10, 5, " ");
-    
-}
-
-void DisplayTable(int table[][12], int size)
-{
-    for (int row = 0; row < size; ++row)
-        DisplayArray(table[row], 12, 12, " ");
-        //for (int col = 0; col < 12; ++col)
-            //std::cout << table[row][col] << " ";
-
-    std::cout << std::endl;
-}
-
-void MultiDimensionalArrayDemo()
-{
-    // 10 x 12 table of values
-    const int MaxRows = 10;
-    const int MaxCols = 12;
-    int multiplication[MaxRows][MaxCols] = {
-        { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 },
-        { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24 },
-        { 3, 6, 9, 12 },
-        { 4, 8, 12, 16 }
-    }; // table with 10 rows, 12 columns
-
-    // Row major (C++) - Stores the entire row of a table first
-    // Column major - Stores the entire column of a table first
-    for (int row = 0; row < MaxRows; ++row)
-        for (int col = 0; col < MaxCols; ++col)
-            multiplication[row][col] = (row + 1) * (col + 1);
-
-    DisplayTable(multiplication, MaxRows);
-}
-        
 void main()
 {
-    //ArrayDemo();
-    //ArrayInitDemo();
+    DynamicallyAllocateArray();
+    // PointerArithmeticDemo();
+    //DynamicMemoryDemo();
 
-    //TODO: Remove once no longer used
-    //Movie movie;
-    //Movie movie2, movie3, movie4; //Support more than 1 movie
     const int MaximumMovies = 100;
-    Movie movies[MaximumMovies];         // Stores 100 movies
-
-    //Array declarations  T id [ Eci ];
-    //  Elements are the values stored in an array
-    //  Names are plural
-    //  All elements have same type
-    //  DO NOT USE to store unrelated values just to save variables
-    //  Value inside the brackets is the size, number of elements, in the array
-    //  Size must be:
-    //  1. a compile time constant 
-    //  2. > than 0
-    //  3. Integer
-    //  Array is NOT part of the type
-    // Other names for arrays: collection, vector, set, list, array
-
-    // All arrays store their elements contiguously in memory
-    // Local variables are stored on stack so be careful of stack space
+    Movie* movies[MaximumMovies] = {0};         // Stores 100 movies
 
     bool quit = false;
     while (!quit)
@@ -779,5 +830,8 @@ The values in an array are called elements
 
 Size (array)
  = Size(element) * Size (declaration)
+
+ Pointers
+ Pointers and indexes are indexes are the exact same thing. They are completely interchangable and produces the exact same outcome. 
 
 */
