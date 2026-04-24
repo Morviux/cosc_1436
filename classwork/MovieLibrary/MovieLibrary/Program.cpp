@@ -346,7 +346,7 @@ void DeleteMovies(Movie* movies[], int size)
 
 /// @brief View movie details
 /// @param movie Movie to view
-void ViewMovie(Movie* ptrMovie)   //ViewMovie (Movie movie) //Pass by value
+void ViewMovie(Movie const* ptrMovie)   //ViewMovie (Movie const& movie) //Pass by value
 {
     //Movie tempMovie;
     //ptrMovie = &tempMovie;   // Local variable, not the argument
@@ -624,11 +624,43 @@ void DynamicallyAllocateArray()
     // To cleanup an array allocated with new, you must use delete array
     // delete pValues; 
     delete[] pValues;
+    pValues = nullptr;
+}
+
+void DisplayString(char const* value) // A string, but using pointer syntax
+{
+    int intValue = 10;
+    const int constValue = 20;
+
+    int* pInt = nullptr;
+    int const* pConstInt = nullptr;
+
+    // Const correctness - understanding and using const correctly. 
+    // Non-constant values to constant values
+    pConstInt = &intValue;
+    // *pConstInt = 30; // ERROR
+
+    // Constant values to non-constant values
+    // pInt = &constValue; // ERROR
+    // *pInt = 30;
+
+    const int& constRef = intValue; // Storing reference to non-const in constant
+    // pInt = &constRef; // ERROR
+
+    // pInt = (int*)&constRef; // The trust-me bro method | (int*)(const int*)
+
+    // static_cast<T>(E) -> C++ typecast that does some basic checking
+    // const_cast<T>(E) -> C++ remove of const from T
+    pInt = const_cast<int*>(&constRef);
+
+    std::cout << value << std::endl;
 }
 
 void main()
 {
-    DynamicallyAllocateArray();
+    DisplayString("Hello!");
+
+    // DynamicallyAllocateArray();
     // PointerArithmeticDemo();
     //DynamicMemoryDemo();
 
@@ -834,4 +866,12 @@ Size (array)
  Pointers
  Pointers and indexes are indexes are the exact same thing. They are completely interchangable and produces the exact same outcome. 
 
+ Pointer            Name                    Value(PTR);           Dereference
+       T *          Ptr to T                Read; Write           Read; Write
+       T * const    Const ptr to T          Read                  Read; Write
+ T const *          Ptr to const T          Read; Write           Read 
+ const T *          ptr to T const          Read; Write           Read
+ const T * const    const ptr to T const    Read                  Read
+ T const * const    const ptr to const T    Read                  Read
+ (Can use & and nothing will change)
 */
