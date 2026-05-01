@@ -72,6 +72,11 @@ void ClassifyChars()
     std::cout << "C++ identifier? " << (IsValidIdentifier(value) ? "Y" : "N") << std::endl;
 }
 
+void CStringDemo()
+{
+
+}
+
 int main()
 {
     ClassifyChars();

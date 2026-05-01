@@ -861,17 +861,17 @@ Array_declaration: Type identifier[Expression(integer number)]
 The values in an array are called elements
 
 Size (array)
- = Size(element) * Size (declaration)
+= Size(element) * Size (declaration)
 
- Pointers
- Pointers and indexes are indexes are the exact same thing. They are completely interchangable and produces the exact same outcome. 
+Pointers
+Pointers and indexes are indexes are the exact same thing. They are completely interchangable and produces the exact same outcome. 
 
- Pointer            Name                    Value(PTR);           Dereference
-       T *          Ptr to T                Read; Write           Read; Write
-       T * const    Const ptr to T          Read                  Read; Write
- T const *          Ptr to const T          Read; Write           Read 
- const T *          ptr to T const          Read; Write           Read
- const T * const    const ptr to T const    Read                  Read
- T const * const    const ptr to const T    Read                  Read
- (Can use & and nothing will change)
+Pointer            Name                    Value(PTR);           Dereference
+      T *          Ptr to T                Read; Write           Read; Write
+      T * const    Const ptr to T          Read                  Read; Write
+T const *          Ptr to const T          Read; Write           Read 
+const T *          ptr to T const          Read; Write           Read
+const T * const    const ptr to T const    Read                  Read
+T const * const    const ptr to const T    Read                  Read
+(Can use & and nothing will change)
 */
