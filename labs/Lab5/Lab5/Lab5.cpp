@@ -33,7 +33,7 @@ bool AddStop(Stop* stops[], int size, int& stopCount, Stop* pStop)
     return true;
 }
 
-/// @brief Handles the stop menu option
+/// @brief Handles the stop menu option.
 /// @param stops The array of stop pointers.
 /// @param size Maximum size of the array.
 /// @param stopCount Current number of stops. 
@@ -65,7 +65,131 @@ void HandleAddStop(Stop* stops[], int size, int& stopCount)
     }
 }
 
+/// @brief Finds a stop given a stop number.
+/// @param stops An array of stop pointers.
+/// @param stopCount Current number of stops.
+/// @param stopNumber The stop number to find (1 based)
+/// @return Pointer to the stop, or nullptr if not found
+Stop* FindStop(Stop* stops[], int stopCount, int stopNumber)
+{
+    int index = stopNumber - 1;
 
+    if (index < 0 || index >= stopCount)
+        return nullptr;
+
+    return stops[index];
+}
+
+/// @brief Shifts elements in the stops array left beginning at startIndex, copying subsequent elements into earlier positions until a null pointer is found or the end of the array is reached.
+/// @param stops Array of pointers to Stop objects; elements are modified in-place. A null pointer acts as a sentinel to stop compaction.
+/// @param size Total number of elements in the stops array.
+/// @param startIndex Index at which compaction begins; the element at this index will be overwritten by the next element.
+void CompactArray(Stop* stops[], int size, int startIndex)
+{
+    int newIndex = startIndex;
+    for (int index = startIndex + 1; index < size; ++index)
+    {
+        stops[newIndex] = stops[index];
+        ++newIndex;
+
+        if (!stops[index])
+            return;
+    }
+}
+
+/// @brief Removes a stop from the trip array.
+/// @param stops An array of pointers.
+/// @param size The maximum size of the array.
+/// @param stopCount Current number of stops.
+/// @param pStop Pointer to the stop to remove.
+void RemoveStop(Stop* stops[], int size, int& stopCount, Stop* pStop)
+{
+    for (int i = 0; i < stopCount; i++)
+    {
+        if (stops[i] == pStop)
+        {
+            delete stops[i];
+            stops[i] = nullptr;
+
+            CompactArray(stops, size, i);
+            stopCount--;
+            return;
+        }
+    }
+}
+
+/// @brief Handles the delete stop menu option.
+/// @param stops Array of stop pointers.
+/// @param size Maximum size of the array.
+/// @param stopCount The current number of stops.
+void HandleDeleteStop(Stop* stops[], int size, int& stopCount)
+{
+    if (stopCount == 0)
+    {
+        std::cout << "There are no stops to delete." << std::endl;
+        return;
+    }
+
+    int stopNumber = 0;
+    std::cout << "Enter stop number to delete: ";
+    std::cin >> stopNumber;
+
+    while (stopNumber < 1)
+    {
+        std::cout << "Invalid. Enter a number greater than 1: ";
+        std::cin >> stopNumber;
+    }
+
+    Stop* pStop = FindStop(stops, stopCount, stopNumber);
+
+    if (!pStop)
+    {
+        std::cout << "Stop not found." << std::endl;
+        return;
+    }
+
+    RemoveStop(stops, size, stopCount, pStop);
+    std::cout << "Stop removed." << std::endl;
+}
+
+/// @brief Displays the trip stops to the user.
+/// @param stops An array of stop pointers.
+/// @param stopCount The current number of stops.
+void HandleViewTrip(Stop* stops[], int stopCount)
+{
+    if (stopCount == 0)
+    {
+        std::cout << "There are no stops present." << std::endl;
+        return; 
+    }
+
+    std::cout << std::left;
+    std::cout << std::setw(10) << "Stop"
+        << std::setw(15) << "Location"
+        << std::endl;
+
+    std::cout << std::setfill('-') << std::setw(25) << ""
+        << std::setfill(' ') << std::endl;
+
+    for (int i = 0; i < stopCount; i++)
+    {
+        std::string location = "(" + std::to_string(stops[i]->x)
+            + ", " + std::to_string(stops[i]->y) + ")";
+
+        std::cout << std::setw(10) << (i + 1)
+            << std::setw(15) << location
+            << std::endl;
+    }
+
+    std::cout << std::setfill('-') << std::setw(25) << ""
+        << std::setfill(' ') << std::endl;
+    std::cout << "Total Stops: " << stopCount << std::endl;
+}
+
+void ClearTrip(Stop* stops[], int& stopCount)
+{
+    // come back to this later. I'm actually tired. It's 1:30 in the FUCKING morning.
+}
 
 /// @brief Displays the main menu for the user. 
 /// @return The user's input.
@@ -140,6 +264,14 @@ void main()
 
             case 'a': case 'A':
                 HandleAddStop(stops, MaxStops, stopCount);
+                break;
+
+            case 'v': case 'V':
+                HandleViewTrip(stops, stopCount);
+                break;
+
+            case 'd': case 'D':
+                HandleDeleteStop(stops, MaxStops, stopCount);
                 break;
         }
     } while (!quit);
