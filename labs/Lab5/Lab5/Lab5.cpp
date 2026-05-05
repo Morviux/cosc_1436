@@ -152,44 +152,131 @@ void HandleDeleteStop(Stop* stops[], int size, int& stopCount)
     std::cout << "Stop removed." << std::endl;
 }
 
-/// @brief Displays the trip stops to the user.
+/// @brief Displays the trop stops to the user.
 /// @param stops An array of stop pointers.
 /// @param stopCount The current number of stops.
-void HandleViewTrip(Stop* stops[], int stopCount)
+/// @param speed The travel speed in miles per hour (MPH).
+void HandleViewTrip(Stop* stops[], int stopCount, int speed)
 {
     if (stopCount == 0)
     {
         std::cout << "There are no stops present." << std::endl;
-        return; 
+        return;
     }
 
-    std::cout << std::left;
+    std::cout << std::left << std::fixed << std::setprecision(2);
     std::cout << std::setw(10) << "Stop"
         << std::setw(15) << "Location"
+        << std::setw(20) << "Distance (Miles)"
+        << std::setw(20) << "Time (Distance):"
         << std::endl;
-
-    std::cout << std::setfill('-') << std::setw(25) << ""
+    std::cout << std::setfill('-') << std::setw(65) << ""
         << std::setfill(' ') << std::endl;
+
+    double totalDistance = 0;
+    double totalTime = 0;
+    int prevX = 0, prevY = 0;
 
     for (int i = 0; i < stopCount; i++)
     {
+        double distance = CalculateDistance(prevX, prevY, stops[i]->x, stops[i]->y);
+        double time = ceil((distance / speed) * 60);
+
+        totalDistance += distance;
+        totalTime += time;
+
         std::string location = "(" + std::to_string(stops[i]->x)
-            + ", " + std::to_string(stops[i]->y) + ")";
+            + "," + std::to_string(stops[i]->y) + ")";
 
         std::cout << std::setw(10) << (i + 1)
             << std::setw(15) << location
+            << std::setw(20) << distance
+            << std::setw(20) << time
             << std::endl;
+
+        prevX = stops[i]->x;
+        prevY = stops[i]->y;
     }
 
-    std::cout << std::setfill('-') << std::setw(25) << ""
+    std::cout << std::setfill('-') << std::setw(65) << ""
         << std::setfill(' ') << std::endl;
-    std::cout << "Total Stops: " << stopCount << std::endl;
+    std::cout << std::setw(10) << stopCount
+        << std::setw(15) << ""
+        << std::setw(20) << totalDistance
+        << std::setw(20) << totalTime
+        << std::endl;
 }
 
+/// @brief Removes all stops from the trip.
+/// @param stops Array of stop pointers.
+/// @param stopCount Current number of stops.
 void ClearTrip(Stop* stops[], int& stopCount)
 {
-    // come back to this later. I'm actually tired. It's 1:30 in the FUCKING morning.
+    for (int i = 0; i < stopCount; i++)
+    {
+        delete stops[i];
+        stops[i] = nullptr;
+    }
+    stopCount = 0;
 }
+
+/// @brief Handles the clear trip menu option
+/// @param stops Array of stop pointers.
+/// @param stopCount The current number of stops.
+void HandleClearTrip(Stop* stops[], int& stopCount)
+{
+    if (stopCount == 0)
+    {
+        std::cout << "There are no stops to clear." << std::endl;
+        return;
+    }
+
+    char confirm;
+    std::cout << "Are you sure you want to clear this trip? (Y/N): ";
+    std::cin >> confirm;
+
+    while (confirm != 'y' && confirm != 'Y' && confirm != 'n' && confirm != 'N')
+    {
+        std::cout << "Invalid input. Do you want to clear this trip? (Y/N): ";
+        std::cin >> confirm;
+    }
+
+    if (confirm == 'y' || confirm == 'Y')
+    {
+        ClearTrip(stops, stopCount);
+        std::cout << "Trip Cleared!" << std::endl;
+    }
+}
+
+/// @brief Prompts the user for their travel speed. 
+/// @return The speed in miles per hour (MPH).
+int GetSpeed()
+{
+    int speed = 0;
+    std::cout << "Enter the speed (1-60): ";
+    std::cin >> speed; 
+
+    while (speed < 1 || speed > 60)
+    {
+        std::cout << "Invalid. Enter the speed (1-60): ";
+        std::cin >> speed; 
+    }
+
+    return speed;
+}
+
+/// @brief Calculates the distance between two points.
+/// @param x1 Starting the x coordinate. 
+/// @param y1 Starting the y coordinate. 
+/// @param x2 Ending the x coordinate. 
+/// @param y2 Ending the y coordinate. 
+/// @return The distance between the two points. 
+double CalculateDistance(int x1, int y1, int x2, int y2)
+{
+    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}
+
+
 
 /// @brief Displays the main menu for the user. 
 /// @return The user's input.
@@ -227,8 +314,14 @@ char DisplayMainMenu()
 bool ConfirmQuit()
 {
     char confirm;
-    std::cout << "Are you sure you want to leave? (Y/N): ";
+    std::cout << "Are you sure you want to quit? (Y/N): ";
     std::cin >> confirm;
+
+    while (confirm != 'y' && confirm != 'Y' && confirm != 'n' && confirm != 'N')
+    {
+        std::cout << "Invalid input. Are you ABSOLUTELY sure you want to quit? (Y/N): ";
+        std::cin >> confirm;
+    }
 
     return (confirm == 'y' || confirm == 'Y');
 }
@@ -249,9 +342,8 @@ void main()
     const int MaxStops = 100;
     Stop* stops[MaxStops] = {nullptr};
     int stopCount = 0;
-
     DisplayProgramInfo();
-
+    int speed = GetSpeed();
 
     do {
         choice = DisplayMainMenu();
@@ -267,12 +359,16 @@ void main()
                 break;
 
             case 'v': case 'V':
-                HandleViewTrip(stops, stopCount);
+                HandleViewTrip(stops, stopCount, speed);
                 break;
 
             case 'd': case 'D':
                 HandleDeleteStop(stops, MaxStops, stopCount);
                 break;
+
+            case 'c': case 'C':
+                HandleClearTrip(stops, stopCount);
+
         }
     } while (!quit);
 }
