@@ -83,7 +83,7 @@ Stop* FindStop(Stop* stops[], int stopCount, int stopNumber)
 /// @brief Shifts elements in the stops array left beginning at startIndex, copying subsequent elements into earlier positions until a null pointer is found or the end of the array is reached.
 /// @param stops Array of pointers to Stop objects; elements are modified in-place. A null pointer acts as a sentinel to stop compaction.
 /// @param size Total number of elements in the stops array.
-/// @param startIndex Index at which compaction begins; the element at this index will be overwritten by the next element.
+/// @param startIndex Index at which compaction begins; the element at this index will be overwritten by the next element. (Telesense made this one up, i just accepted it).
 void CompactArray(Stop* stops[], int size, int startIndex)
 {
     int newIndex = startIndex;
@@ -149,10 +149,21 @@ void HandleDeleteStop(Stop* stops[], int size, int& stopCount)
     }
 
     RemoveStop(stops, size, stopCount, pStop);
-    std::cout << "Stop removed." << std::endl;
+    std::cout << "Stop removed!" << std::endl;
 }
 
-/// @brief Displays the trop stops to the user.
+/// @brief Calculates the distance between two points.
+/// @param x1 Starting the x coordinate. 
+/// @param y1 Starting the y coordinate. 
+/// @param x2 Ending the x coordinate. 
+/// @param y2 Ending the y coordinate. 
+/// @return The distance between the two points. 
+double CalculateDistance(int x1, int y1, int x2, int y2)
+{
+    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}
+
+/// @brief Displays the trip stops to the user.
 /// @param stops An array of stop pointers.
 /// @param stopCount The current number of stops.
 /// @param speed The travel speed in miles per hour (MPH).
@@ -168,7 +179,7 @@ void HandleViewTrip(Stop* stops[], int stopCount, int speed)
     std::cout << std::setw(10) << "Stop"
         << std::setw(15) << "Location"
         << std::setw(20) << "Distance (Miles)"
-        << std::setw(20) << "Time (Distance):"
+        << std::setw(20) << "Time (minutes)"
         << std::endl;
     std::cout << std::setfill('-') << std::setw(65) << ""
         << std::setfill(' ') << std::endl;
@@ -265,19 +276,6 @@ int GetSpeed()
     return speed;
 }
 
-/// @brief Calculates the distance between two points.
-/// @param x1 Starting the x coordinate. 
-/// @param y1 Starting the y coordinate. 
-/// @param x2 Ending the x coordinate. 
-/// @param y2 Ending the y coordinate. 
-/// @return The distance between the two points. 
-double CalculateDistance(int x1, int y1, int x2, int y2)
-{
-    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-}
-
-
-
 /// @brief Displays the main menu for the user. 
 /// @return The user's input.
 char DisplayMainMenu()
@@ -372,5 +370,3 @@ void main()
         }
     } while (!quit);
 }
-
-// Hi :3
