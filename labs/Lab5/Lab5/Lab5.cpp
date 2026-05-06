@@ -9,8 +9,6 @@ COSC 1436 - Spring 2026
 #include <iomanip>
 #include <string>
 
-
-/// @brief A struct to represent a 'stop' in the program.
 struct Stop
 {
     int x = 0;
@@ -242,6 +240,7 @@ void HandleClearTrip(Stop* stops[], int& stopCount)
         return;
     }
 
+
     char confirm;
     std::cout << "Are you sure you want to clear this trip? (Y/N): ";
     std::cin >> confirm;
@@ -257,6 +256,8 @@ void HandleClearTrip(Stop* stops[], int& stopCount)
         ClearTrip(stops, stopCount);
         std::cout << "Trip Cleared!" << std::endl;
     }
+
+    // Decided to stick with the while loop and a return of confirmation. 
 }
 
 /// @brief Prompts the user for their travel speed. 
@@ -370,3 +371,6 @@ void main()
         }
     } while (!quit);
 }
+
+// In terms of validating the users input. I decided to stick with while loops as they were the best (and unfortunately, easiest) way to confirm answers while ensuring nothing gets awry.
+// I would need to change a few things around to use the do loop.
